@@ -29,6 +29,10 @@
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
+// include('functions/SqlSecurityFnc.php');
+
+$id = sqlSecurityFilter($_REQUEST['id']);
+
  $sql = 'SELECT
                                 s.COURSE_ID,s.COURSE_PERIOD_ID,
                                 s.MARKING_PERIOD_ID,s.START_DATE,s.END_DATE,s.MODIFIED_DATE,s.MODIFIED_BY,
@@ -44,14 +48,42 @@ include 'Warehouse.php';
                                  AND r.ROOM_ID=cpv.ROOM_ID
                                 AND s.COURSE_PERIOD_ID = cp.COURSE_PERIOD_ID
                                 AND s.SCHOOL_ID = sp.SCHOOL_ID AND s.SYEAR = c.SYEAR AND sp.PERIOD_ID = cpv.PERIOD_ID
-                                AND s.ID=' . $_REQUEST[id] . '  GROUP BY cp.COURSE_PERIOD_ID';
+                                AND s.ID=' . $id . '  GROUP BY cp.COURSE_PERIOD_ID';
 
         $QI = DBQuery($sql);
         $schedule_RET = DBGet($QI, array('TITLE' => '_makeTitle', 'PERIOD_PULLDOWN' => '_makePeriodSelect', 'COURSE_MARKING_PERIOD_ID' => '_makeMPA', 'DAYS' => '_makeDays', 'SCHEDULER_LOCK' => '_makeViewLock', 'START_DATE' => '_makeViewDate', 'END_DATE' => '_makeViewDate', 'MODIFIED_DATE' => '_makeViewDate'));
-        $columns = array('TITLE' => 'Course ', 'PERIOD_PULLDOWN' => 'Period - Teacher', 'ROOM' => 'Room', 'DAYS' => 'Days of Week', 'COURSE_MARKING_PERIOD_ID' => 'Term', 'SCHEDULER_LOCK' => '<IMG SRC=assets/locked.gif border=0>', 'START_DATE' => 'Enrolled', 'END_DATE' => 'End Date/Drop Date', 'MODIFIED_NAME' => 'Modified By', 'MODIFIED_DATE' => 'Modified Date');
-        $options = array('search' => false, 'count' => false, 'save' => false, 'sort' => false);
-        ListOutput($schedule_RET, $columns, 'Course', 'Courses', $link, '', $options);
+        $columns = array('TITLE' =>_course,
+         'PERIOD_PULLDOWN' =>_periodTeacher,
+         'ROOM' =>_room,
+         'DAYS' =>_daysOfWeek,
+         'COURSE_MARKING_PERIOD_ID' =>_term,
+         'SCHEDULER_LOCK' =>  '<IMG SRC=assets/locked.gif border=0>',
+         'START_DATE' =>_enrolled,
+         'END_DATE' =>_endDateDropDate,
+         'MODIFIED_NAME' =>_modifiedBy,
+         'MODIFIED_DATE' =>_modifiedDate,
+        );
+        $options = array('search' =>false, 'count' =>false, 'save' =>false, 'sort' =>false);
+        ListOutput($schedule_RET, $columns,  _course, _courses, $link, '', $options);
         
-//        echo '<br /><div align="center"><input type="button" class="btn btn-primary" value="Close" onclick="window.close();"></div>';
+        function _makeViewDate($value, $column) {
+                if ($value)
+                    return ProperDate($value);
+                else
+                    return '<center>n/a</center>';
+            }
+            
+        //        echo '<br /><div align="center"><input type="button" class="btn btn-primary" value="Close" onclick="window.close();"></div>';
+
+        function _makeViewLock($value, $column) {
+            global $THIS_RET;
+        
+            if ($value == 'Y')
+                $img = 'locked';
+            else
+                $img = 'unlocked';
+        
+            return '<IMG SRC=assets/' . $img . '.gif >';
+        }
 ?>
 

@@ -45,20 +45,21 @@ $i = 1;
 //echo "<pre>"; print_r($fields_RET);
 
 foreach ($fields_RET as $key => $field) {
-//        echo ($key)."--<br>";
-//        print_r($field);
+    //    echo ($key)."--<br>";
+    //    print_r($field);
 
     if ($i == 1) {
         echo '<div class="row">';
     }
-
+    
     switch ($field['TYPE']) {
         case 'text':
 
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
 
-            echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextInput('CUSTOM_' . $field['ID'], '', 'size=25 class=cell_floating') . '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . _makeTextInput('CUSTOM_' . $field['ID'], '', 'size=25 class=cell_floating') . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextInput('CUSTOM_' . $field['ID'], '', 'size=25 class=cell_floating') . '</div>';
 
             echo '</div>';
             echo '</div>';
@@ -70,7 +71,8 @@ foreach ($fields_RET as $key => $field) {
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
 
-            echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeAutoSelectInputParent('CUSTOM_' . $field['ID'], '') . '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . _makeAutoSelectInputParent('CUSTOM_' . $field['ID'], '') . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeAutoSelectInputParent('CUSTOM_' . $field['ID'], '') . '</div>';
 
             echo '</div>';
             echo '</div>';
@@ -82,7 +84,8 @@ foreach ($fields_RET as $key => $field) {
 
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeAutoSelectInputParent('CUSTOM_' . $field['ID'], '') . '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . _makeAutoSelectInputParent('CUSTOM_' . $field['ID'], '') . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeAutoSelectInputParent('CUSTOM_' . $field['ID'], '') . '</div>';
             echo '</div>';
             echo '</div>';
 
@@ -93,6 +96,7 @@ foreach ($fields_RET as $key => $field) {
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
             echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class="text-danger">*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextInput('CUSTOM_' . $field['ID'], '', 'size=5 maxlength=10 class=cell_floating') . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class="text-danger">*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextInput('CUSTOM_' . $field['ID'], '', 'size=5 maxlength=10 class=cell_floating') . '</div>';
             echo '</div>';
             echo '</div>';
 
@@ -102,7 +106,8 @@ foreach ($fields_RET as $key => $field) {
 
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . DateInputAY($value['CUSTOM_' . $field['ID']], 'CUSTOM_' . $field['ID'], $field['ID']) . '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . DateInputAY($value['CUSTOM_' . $field['ID']], 'CUSTOM_' . $field['ID'], $field['ID']) . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . DateInputAY($value['CUSTOM_' . $field['ID']], 'CUSTOM_' . $field['ID'], $field['ID']) . '</div>';
             echo '<input type=hidden name=custom_date_id[] value="' . $field['ID'] . '" />';
             echo '</div>';
             echo '</div>';
@@ -114,7 +119,8 @@ foreach ($fields_RET as $key => $field) {
 
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeSelectInput('CUSTOM_' . $field['ID'], '') . '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . _makeSelectInput('CUSTOM_' . $field['ID'], '') . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeSelectInput('CUSTOM_' . $field['ID'], '') . '</div>';
             echo '</div>';
             echo '</div>';
 
@@ -124,7 +130,8 @@ foreach ($fields_RET as $key => $field) {
 
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeMultipleInput('CUSTOM_' . $field['ID'], '', 'user_checkbox') . '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . _makeMultipleInput('CUSTOM_' . $field['ID'], '', 'user_checkbox') . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeMultipleInput('CUSTOM_' . $field['ID'], '', 'user_checkbox') . '</div>';
             echo '</div>';
             echo '</div>';
 
@@ -134,7 +141,8 @@ foreach ($fields_RET as $key => $field) {
 
             echo '<div class="col-lg-6">';
             echo '<div class="form-group">';
-            echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeCheckboxInput('CUSTOM_' . $field['ID'], '') . '</div>';
+            echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . _makeCheckboxInput('CUSTOM_' . $field['ID'], '') . '</div>';
+            // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeCheckboxInput('CUSTOM_' . $field['ID'], '') . '</div>';
             echo '</div>';
             echo '</div>';
 
@@ -160,7 +168,8 @@ foreach ($fields_RET as $field) {
     if ($field['TYPE'] == 'textarea') {
         echo '<div class="col-lg-6">';
         echo '<div class="form-group">';
-        echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextareaInput('CUSTOM_' . $field['ID'], '') . '</div>';
+        echo '<label class="control-label col-lg-4 text-right">' . $field['TITLE'] . ($field['REQUIRED'] == 'Y' ? ' <span class=text-danger>*</span>' : '')  . '</label><div class="col-lg-8">' . _makeTextareaInput('CUSTOM_' . $field['ID'], '') . '</div>';
+        // echo '<label class="control-label col-lg-4 text-right">' . ($field['REQUIRED'] == 'Y' ? '<span class=red>*</span>' : '') . $field['TITLE'] . '</label><div class="col-lg-8">' . _makeTextareaInput('CUSTOM_' . $field['ID'], '') . '</div>';
         echo '</div>';
         echo '</div>';
     }

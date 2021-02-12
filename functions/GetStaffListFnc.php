@@ -125,6 +125,12 @@ function GetUserStaffList(& $extra)
                 }
 
 		$sql .= $extra['WHERE'].' ';
+
+		if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false)
+        {
+            $sql .= ' AND s.PROFILE_ID NOT IN(0,1) '; 
+        }
+
                 if ($extra['GROUP'])
                     $sql .= ' GROUP BY ' . $extra['GROUP'];
 		$sql .= 'ORDER BY FULL_NAME ';
@@ -136,7 +142,13 @@ function GetUserStaffList(& $extra)
             {
                 if ($_REQUEST['sql_save_session_staf'])
                     $_SESSION['staf_search']['sql'] = $sql;
+
+            if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false)
+	        {
+	            $_SESSION['staf_search_hold'] = $sql;
             }
+        }
+
 /***************************************************************************************************/
 		if ($extra['functions'])
 			$functions += $extra['functions'];

@@ -53,55 +53,69 @@ if (('Backup' == $_REQUEST['action']) || ($_REQUEST['action'] == 'backup')) {
         $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
         $row = $result->fetch_assoc();
         $mysql_dir1 = substr($row['Value'], 0, 2);
-        $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
-        $sql_path="\\".$sql_path_arr[1].'\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
-        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$_SERVER['MYSQL_HOME']);
-//        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
+        $sql_path_arr = explode("\\", $_SERVER['MYSQL_HOME']);
+        $sql_path = "\\" . $sql_path_arr[1] . '\\' . $sql_path_arr[2] . '\\' . $sql_path_arr[3];
+        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
+        // $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
     }
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         if ($pass == '')
             exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user  $name > $Export_FileName");
         else
             exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
-    }
-    else {
+    } else {
         exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $user --password='$pass' $name > $Export_FileName");
     }
-    $content = file_get_contents($Export_FileName);
+    // $content = file_get_contents($Export_FileName);
+
+    $fair_date = date("Y-m-d");
+
+    $same_dt_chck = DBGet(DBQuery("SELECT COUNT(*) AS TODAY_BACKUP FROM `program_config` WHERE `program` = 'DB_BACKUP' AND `value` = '" . $fair_date . "'"));
+
+    if ($same_dt_chck[1]['TODAY_BACKUP'] == 0) {
+        $program_entry = "INSERT INTO `program_config` (`syear`, `school_id`, `program`, `title`, `value`) VALUES('" . UserSyear() . "', '" . UserSchool() . "', 'DB_BACKUP', '" . str_replace(".sql", "", $Export_FileName) . "', '" . $fair_date . "')";
+
+        if ($program_entry) {
+            DBQuery($program_entry);
+        }
+    }
+
     $fname = $Export_FileName;
-    unlink($Export_FileName);
-    header('Content-Type: application/octet-stream');
-    header("Content-Transfer-Encoding: Binary");
-    header("Content-disposition: attachment; filename=\"" . $fname . "\"");
-    //$content= file_get_contents($Export_FileName);
-    echo $content;
+    header('Location: ' . $Export_FileName);
+    // unlink($Export_FileName);
+    // header('Content-Type: application/octet-stream');
+    // header("Content-Transfer-Encoding: Binary");
+    // header("Content-disposition: attachment; filename=\"" . $fname . "\"");
+    // //$content= file_get_contents($Export_FileName);
+    // echo $content;
     exit;
 }
 if ($print_form > 0 && !$_REQUEST['modfunc'] == 'cancel') {
-    ?>
+?>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <form id="dataForm" name="dataForm" method="post" action="ForExport.php?modname=tools/Backup.php&action=backup&_openSIS_PDF=true" target=_blank>
                 <?php
-                PopTable('header', 'Backup');
-                echo '<h4 class="text-danger">Note:</h4><p>This backup utility will create a backup of the database along with the database structure. You will be able to use this backup file to restore the database. However, in order to restore, you  will need to have access to MySQL administration application like phpMyAdmin and the root user id and password to MySQL.</p>';
+                PopTable('header',  _backup);
+                echo '<h4 class="text-danger">' . _note . ':</h4><p>' . _thisBackupUtilityWillCreateABackupOfTheDatabaseAlongWithTheDatabaseStructureYouWillBeAbleToUseThisBackupFileToRestoreTheDatabaseHoweverInOrderToRestoreYouWillNeedToHaveAccessToMySqlAdministrationApplicationLikePhpMyAdminAndTheRootUserIdAndPasswordToMySql . '</p>';
 
-                $btn = '<input type="submit" name="action"  value="Backup" class="btn btn-primary"> &nbsp; ';
+                $btn = '<input type="submit" name="action"  value="' . _backup . '" class="btn btn-primary"> &nbsp; ';
                 $modname = 'tools/Backup.php';
-                $btn .= '<a href=javascript:void(0); onClick="check_content(\'Ajax.php?modname=miscellaneous/Portal.php\');" STYLE="TEXT-DECORATION: NONE"> <INPUT type=button class="btn btn-default" name=Cancel value=Cancel></a>';
-                
+                $btn .= '<a href=javascript:void(0); onClick="check_content(\'Ajax.php?modname=miscellaneous/Portal.php\');" STYLE="TEXT-DECORATION: NONE"> <INPUT type=button class="btn btn-default" name=Cancel value="' . _cancel . '"></a>';
+
                 PopTable('footer', $btn);
                 ?>
             </form>
         </div>
     </div>
-    <?php
+<?php
 }
 
-function EXPORT_TABLES($host, $user, $pass, $name, $tables = false, $backup_name = false) {
+function EXPORT_TABLES($host, $user, $pass, $name, $tables = false, $backup_name = false)
+{
 
     // $backup_name=$name;
-//    $backup_name=$name."(".date("H:i:s d-m-Y").").sql";
+    //    $backup_name=$name."(".date("H:i:s d-m-Y").").sql";
     if (strpos($name, 'opensis') >= 0)
         $backup_name = $name . "_" . str_replace("-", '_', date("m-d-Y")) . ".sql";
     else
@@ -112,7 +126,8 @@ function EXPORT_TABLES($host, $user, $pass, $name, $tables = false, $backup_name
     $queryTables = $mysqli->query("SHOW TABLES");
     while ($row = $queryTables->fetch_row()) {
         $target_tables[] = $row[0];
-    } if ($tables !== false) {
+    }
+    if ($tables !== false) {
         $target_tables = array_intersect($target_tables, $tables);
     }
     $content = "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";\r\nSET time_zone = \"+00:00\";\r\n\r\n\r\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\r\n/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\r\n/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\r\n/*!40101 SET NAMES utf8 */;\r\n--\r\n-- Database: `" . $name . "`\r\n--\r\n\r\n\r\n";
@@ -142,22 +157,26 @@ function EXPORT_TABLES($host, $user, $pass, $name, $tables = false, $backup_name
                             $content .= '"' . $row[$j] . '"';
                         } else {
                             $content .= 'NULL';
-                        } if ($j < ($fields_amount - 1)) {
-                            $content.= ',';
                         }
-                    } $content .=")";
+                        if ($j < ($fields_amount - 1)) {
+                            $content .= ',';
+                        }
+                    }
+                    $content .= ")";
                     //every after 100 command cycle [or at last line] ....p.s. but should be inserted 1 cycle eariler
                     if ((($st_counter + 1) % 100 == 0 && $st_counter != 0) || $st_counter + 1 == $rows_num) {
                         $content .= ";";
                     } else {
                         $content .= ",";
-                    } $st_counter = $st_counter + 1;
+                    }
+                    $st_counter = $st_counter + 1;
                 }
-            } $content .="\n\n\n";
+            }
+            $content .= "\n\n\n";
         }
     }
 
-    $content.= "--
+    $content .= "--
               --
               --
 
@@ -227,7 +246,7 @@ CREATE VIEW transcript_grades AS
     INNER JOIN student_gpa_calculated sgc ON sgc.student_id = rcg.student_id AND sgc.marking_period_id = rcg.marking_period_id
     INNER JOIN schools s ON s.id = mp.school_id;\n
             ";
-    $content.="DELIMITER $$
+    $content .= "DELIMITER $$
 --
 -- Procedures
 --
@@ -249,7 +268,7 @@ END$$
 
 CREATE PROCEDURE `ATTENDANCE_CALC_BY_DATE`(IN sch_dt DATE,IN year INT,IN school INT)
 BEGIN
- DELETE FROM missing_attendance WHERE SCHOOL_DATE=sch_dt AND SYEAR=year AND SCHOOL_ID=school;
+ DELETE FROM missing_attendance WHERE SCHOOL_DATE=sch_dt AND SYEAR=year AND SCHOOL_ID= _school;
  INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cpv.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN marking_periods mp ON mp.SYEAR=acc.SYEAR AND mp.SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN mp.START_DATE AND mp.END_DATE INNER JOIN course_periods cp ON cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID  AND cp.CALENDAR_ID=acc.CALENDAR_ID INNER JOIN course_period_var cpv ON cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.DOES_ATTENDANCE='Y' LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN school_periods sp ON sp.SYEAR=acc.SYEAR AND sp.SCHOOL_ID=acc.SCHOOL_ID AND sp.PERIOD_ID=cpv.PERIOD_ID AND (sp.BLOCK IS NULL AND position(substring('UMTWHFS' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cpv.DAYS)>0 OR sp.BLOCK IS NOT NULL AND acc.BLOCK IS NOT NULL AND sp.BLOCK=acc.BLOCK) INNER JOIN schools s ON s.ID=acc.SCHOOL_ID INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE )  LEFT JOIN attendance_completed ac ON ac.SCHOOL_DATE=acc.SCHOOL_DATE AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id) AND ac.PERIOD_ID=sp.PERIOD_ID WHERE acc.SYEAR=year AND acc.SCHOOL_ID=school AND (acc.MINUTES IS NOT NULL AND acc.MINUTES>0) AND acc.SCHOOL_DATE=sch_dt AND ac.STAFF_ID IS NULL GROUP BY s.TITLE,acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID;
 END$$
 
@@ -646,7 +665,7 @@ END$$
 DELIMITER ;
 -- --------------------------------------------------------\n
 ";
-    $content.= "--
+    $content .= "--
 -- Triggers `STUDENT_REPORT_CARD_GRADES`
 --
 DROP TRIGGER IF EXISTS `td_student_report_card_grades`;
@@ -786,8 +805,8 @@ CREATE TRIGGER `td_cal_missing_attendance`
 	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.school_date;";
     $content .= "\r\n\r\n/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;\r\n/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;\r\n/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;";
 
-//    $backup_name = $backup_name ? $backup_name."_(".date('H:i:s')."_".date('d-m-Y').")__rand".rand(1,11111111).".sql" : $name."___(".date('H-i-s')."_".date('d-m-Y').")__rand".rand(1,11111111).".sql";
-//    
+    //    $backup_name = $backup_name ? $backup_name."_(".date('H:i:s')."_".date('d-m-Y').")__rand".rand(1,11111111).".sql" : $name."___(".date('H-i-s')."_".date('d-m-Y').")__rand".rand(1,11111111).".sql";
+    //    
     //$backup_name = $backup_name ? $backup_name."_(".date('H:i:s')."_".date('d-m-Y').").sql" : $name."_(".date('H:i:s')."_".date('d-m-Y').").sql";
 
     ob_get_clean();

@@ -95,12 +95,9 @@ $err .= '<!DOCTYPE html>
     </body>
 </html>';
 //$dbconn = mysqli_connect($_SESSION['host'],$_SESSION['username'],$_SESSION['password'])
-$dbconn = mysqli_init();
+$dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
 
-$dbconn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 300);
-$dbconn->options(MYSQLI_OPT_READ_TIMEOUT, 300);
 
-$dbconn->real_connect($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
 
 if ($dbconn->connect_errno != 0) {
 
@@ -153,7 +150,6 @@ if ($dbconn->connect_errno != 0) {
 
         exit($err);
     }
-    $dbconn->close();
 }
 
 if (clean_param($_REQUEST['mod'], PARAM_ALPHAMOD) == 'upgrade') {

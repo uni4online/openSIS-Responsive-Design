@@ -29,17 +29,20 @@
 include('RedirectRootInc.php');
 include'ConfigInc.php';
 include 'Warehouse.php';
+// include('functions/SqlSecurityFnc.php');
+
+$id = sqlSecurityFilter($_REQUEST['id']);
 
 if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'course_periods') {
 
-    $sql = "SELECT * FROM course_periods WHERE COURSE_ID='$_REQUEST[id]'AND (marking_period_id IS NOT NULL AND marking_period_id IN(" . GetAllMP(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ") OR marking_period_id IS NULL AND '" . date('Y-m-d') . "' <= end_date) ORDER BY TITLE";
+    $sql = "SELECT * FROM course_periods WHERE COURSE_ID='$id'AND (marking_period_id IS NOT NULL AND marking_period_id IN(" . GetAllMP(GetMPTable(GetMP(UserMP(), 'TABLE')), UserMP()) . ") OR marking_period_id IS NULL AND '" . date('Y-m-d') . "' <= end_date) ORDER BY TITLE";
     $QI = DBQuery($sql);
 
     $coursePeriods_RET = DBGet($QI);
     $html = 'cp_modal||';
-    $html.='<h6>' . count($coursePeriods_RET) . ((count($coursePeriods_RET) == 1) ? ' Period was' : ' Periods were') . ' found.</h6>';
+    $html.='<h6>' . count($coursePeriods_RET) . ((count($coursePeriods_RET) == 1) ? ' '._periodWas.'' : ' '._periodsWere.'') . ' '._found.'.</h6>';
     if (count($coursePeriods_RET) > 0) {
-        $html.='<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Course Periods</th></tr></thead>';
+        $html.='<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._coursePeriods.'</th></tr></thead>';
         $html.='<tbody>';
         foreach ($coursePeriods_RET as $val) {
             $subject_id = DBGet(DBQuery('SELECT SUBJECT_ID FROM courses WHERE COURSE_ID=' . $val['COURSE_ID']));
@@ -52,13 +55,13 @@ if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'course_periods'
 
 if ($_REQUEST['table_name'] != '' && $_REQUEST['table_name'] == 'courses') {
 
-    $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$_REQUEST[id]' ORDER BY c.TITLE";
+    $sql = "SELECT COURSE_ID,c.TITLE, CONCAT_WS(' - ',c.short_name,c.title) AS GRADE_COURSE FROM courses c LEFT JOIN school_gradelevels sg ON c.grade_level=sg.id WHERE SUBJECT_ID='$id' ORDER BY c.TITLE";
     $QI = DBQuery($sql);
     $courses_RET = DBGet($QI);
     $html = 'course_modal||';
-    $html.='<h6>'.count($courses_RET) . ((count($courses_RET) == 1) ? ' Course was' : ' Courses were') . ' found.</h6>';
+    $html.='<h6>'.count($courses_RET) . ((count($courses_RET) == 1) ? ' '._courseWas.'' : ' '._coursesWere.'') . ' '._found.'.</h6>';
     if (count($courses_RET) > 0) {
-        $html.='<table  class="table table-bordered"><thead><tr class="alpha-grey"><th>Course</th></tr></thead>';
+        $html.='<table  class="table table-bordered"><thead><tr class="alpha-grey"><th>'._course.'</th></tr></thead>';
         $html.='<tbody>';
         foreach ($courses_RET as $val) {
 

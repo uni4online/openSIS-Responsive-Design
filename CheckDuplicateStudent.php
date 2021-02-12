@@ -27,13 +27,15 @@
 #***************************************************************************************
 	include('RedirectRootInc.php'); 
         include('Warehouse.php');
-	include'ConfigInc.php';
-	$student_fname= $_REQUEST['fn'];
-        $student_mname = $_REQUEST['mn'];
-        $student_lname = $_REQUEST['ln'];
-        $student_byear = $_REQUEST['byear'];
-        $student_bmonth = $_REQUEST['bmonth'];
-        $student_bday = $_REQUEST['bday'];
+include('ConfigInc.php');
+// include('functions/SqlSecurityFnc.php');
+
+$student_fname = sqlSecurityFilter($_REQUEST['fn']);
+$student_mname = sqlSecurityFilter($_REQUEST['mn']);
+$student_lname = sqlSecurityFilter($_REQUEST['ln']);
+$student_byear = sqlSecurityFilter($_REQUEST['byear']);
+$student_bmonth = sqlSecurityFilter($_REQUEST['bmonth']);
+$student_bday = sqlSecurityFilter($_REQUEST['bday']);
 	
                                         if($student_bmonth == 'JAN')
 						$student_bmonth = '01';
@@ -67,4 +69,5 @@ $chechk_stu = 'SELECT s.student_id AS ID FROM students s,student_enrollment se W
 $chechk_stu_result = DBGet(DBQuery($chechk_stu));
 $prev_student = count($chechk_stu_result);
   echo $prev_student;  
+
 ?>

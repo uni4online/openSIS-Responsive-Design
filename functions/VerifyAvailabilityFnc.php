@@ -477,15 +477,6 @@ function VerifyStudentSchedule($course_RET,$student_id='')
             return 'Course period already scheduled';
         }
     }
-
-    $course_RET[1]['STUDENT_ID'] = $student_id;
-
-    $actionFrameworkResult = ActionFramework::process("Schedule", "validate", $course_RET);
-    if(!$actionFrameworkResult['isSuccess'])
-    {
-        return $actionFrameworkResult['message'];
-    }
-
     $check_parent_schedule=DBGet(DBQuery('SELECT PARENT_ID FROM course_periods WHERE COURSE_PERIOD_ID='.$course_RET[1]['COURSE_PERIOD_ID']));
     if($check_parent_schedule[1]['PARENT_ID']!='' && $check_parent_schedule[1]['PARENT_ID']!=$course_RET[1]['COURSE_PERIOD_ID'])
     {
@@ -504,12 +495,12 @@ function VerifyStudentSchedule($course_RET,$student_id='')
     {
         return 'There is gender restriction';
     }
-    $do_check=false;
+    $do_check= false;
     foreach($course_RET as $course)
     {
         if($course['IGNORE_SCHEDULING']!='Y')
         {
-            $do_check=true;
+            $do_check= true;
             break;
         }
     }
@@ -550,7 +541,9 @@ function VerifyStudentSchedule($course_RET,$student_id='')
         $period_days_append_sql=" AND course_period_id IN(SELECT course_period_id from course_period_var cpv,school_periods sp WHERE cpv.period_id=sp.period_id AND ignore_scheduling IS NULL AND (";
         foreach($course_RET as $period_date)
         {
-            $period_days_append_sql .="(sp.start_time<='$period_date[END_TIME]' AND '$period_date[START_TIME]'<=sp.end_time AND IF(course_period_date IS NULL, course_period_date='$period_date[COURSE_PERIOD_DATE]',DAYS LIKE '%$period_date[DAYS]%')) OR ";
+            // $period_days_append_sql .="(sp.start_time<='$period_date[END_TIME]' AND '$period_date[START_TIME]'<=sp.end_time AND IF(course_period_date IS NULL, course_period_date='$period_date[COURSE_PERIOD_DATE]',DAYS LIKE '%$period_date[DAYS]%')) OR ";
+              $period_days_append_sql .="(sp.start_time<='$period_date[END_TIME]' AND '$period_date[START_TIME]'<=sp.end_time AND (cpv.course_period_date IS NULL OR cpv.course_period_date='$period_date[COURSE_PERIOD_DATE]') AND cpv.DAYS LIKE '%$period_date[DAYS]%') OR ";
+
         }
         $period_days_append_sql=  substr($period_days_append_sql,0,-4).'))';
     }

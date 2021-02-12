@@ -33,12 +33,7 @@ session_start();
 $_SESSION['db'] = clean_param($_REQUEST["db"], PARAM_DATA);
 $purgedb = clean_param($_REQUEST["purgedb"], PARAM_ALPHA); // Added variable to check for removing existing data.
 //$dbconn = mysql_connect($_SESSION['host'],$_SESSION['username'],$_SESSION['password']);
-$dbconn = mysqli_init();
-$dbconn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 300);
-$dbconn->options(MYSQLI_OPT_READ_TIMEOUT, 300);
-
-$dbconn->real_connect($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
-$dbconn->query('set session net_read_timeout =300; set session net_write_timeout =300;');
+$dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
 //$sql="select count(*) from information_schema.SCHEMATA where schema_name = '".$_SESSION['db']."'" ;
 //$res =$dbconn->query($sql);
 //
@@ -84,22 +79,17 @@ if ($dbconn->connect_errno == 0) {
         //This begins the add portion
 
         $myFile = "OpensisSchemaMysqlInc.sql";
-        executeSQL($myFile, $dbconn);
+        executeSQL($myFile);
 
         $myFile = "OpensisProcsMysqlInc.sql";
-        executeSQL($myFile, $dbconn);
+        executeSQL($myFile);
 
         $dbconn->close();
 
         header('Location: Step3.php');
     }
 } else {
-    $dbconn = mysqli_init();
-    $dbconn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 300);
-    $dbconn->options(MYSQLI_OPT_READ_TIMEOUT, 300);
-    $dbconn->real_connect($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
-    $dbconn->query('set session net_read_timeout =300; set session net_write_timeout =300;');
-
+    $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], '', $_SESSION['port']);
     $sql = "CREATE DATABASE `" . $_SESSION['db'] . "` CHARACTER SET=utf8;";
     $result = $dbconn->query($sql);
     if (!$result) {
@@ -113,21 +103,23 @@ if ($dbconn->connect_errno == 0) {
 //        exit;
 //    }
 
+
     $myFile = "OpensisSchemaMysqlInc.sql";
-    executeSQL($myFile, $dbconn);
+    executeSQL($myFile);
+
 
     $myFile = "OpensisProcsMysqlInc.sql";
-    executeSQL($myFile, $dbconn);
+    executeSQL($myFile);
 
     //mysqli_close($dbconn);
     $dbconn->close();
-
 
 // edited installation
     header('Location: Step3.php');
 }
 
-function executeSQL($myFile, $conn) {
+function executeSQL($myFile) {
+    $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $_SESSION['db'], $_SESSION['port']);
     $sql = file_get_contents($myFile);
     $sqllines = par_spt("/[\n]/", $sql);
 //    print_r($sqllines);exit;
@@ -148,7 +140,7 @@ function executeSQL($myFile, $conn) {
                     }
                 }
                 if (par_rep_mt('/.+;/', $l) != 0 && !$delim) {
-                    $result = $conn->query($cmd) or die($conn->error);
+                    $result = $dbconn->query($cmd) or die($dbconn->error);
                     $cmd = '';
                 }
             }

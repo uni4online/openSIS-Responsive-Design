@@ -22,7 +22,7 @@
                     <div class="panel-body">
                         <div class="installation-steps-wrapper">
                             <div class="installation-steps text-center">
-                                <?php
+<?php
 #**************************************************************************
 #  openSIS is a free student information system for public and non-public 
 #  schools from Open Solutions for Education, Inc. web: www.os4ed.com
@@ -59,8 +59,6 @@
                                 $mysql_database = $_SESSION['db'];
                                 $dbUser = $_SESSION['username'];
                                 $dbPass = $_SESSION['password'];
-//$dbconn = mysql_connect($_SESSION['server'], $_SESSION['username'], $_SESSION['password']) or die();
-//mysql_select_db($mysql_database, $dbconn);
                                 $dbconn = new mysqli($_SESSION['server'], $_SESSION['username'], $_SESSION['password'], $mysql_database, $_SESSION['port']);
 
                                 if ($dbconn->connect_errno != 0)
@@ -71,7 +69,6 @@
                                     $mysql_dir1 = substr($row['Value'], 0, 2);
                                     $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
                                 }
-                                //$q1 = $dbconn->query("SELECT name,value FROM app where name='version'") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 1</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
 
                                 $q2r = $dbconn->query("SELECT name,value FROM app where name='version'") or die('<i class="fa fa-exclamation-triangle fa-3x text-danger"></i><h2>' . $dbconn->error . ' error at 2</h2><br/><a href="Step0.php" class="btn btn-danger"><i class="fa fa-refresh"></i> Start Again</a>');
                                 $q2 = $q2r->fetch_assoc();
@@ -200,11 +197,11 @@
                                 else if ($v == '6.3' || $v == '6.4' || $v == '6.5' || $v=='7.0') {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.4'),
-                                        ('date', 'April 25, 2020'),
-                                        ('build', '20200425001'),
+                                        ('version', '7.6'),
+                                        ('date', 'September 11, 2020'),
+                                        ('build', '20200811001'),
                                         ('update', '0'),
-                                        ('last_updated', 'April 25, 2020');";
+                                        ('last_updated', 'September 11, 2020');";
                                     $dbconn->query($app_insert);
                                     
                                     $dbconn->query('ALTER TABLE `staff` ADD `img_name` VARCHAR(255) NULL AFTER `disability_desc`');
@@ -316,6 +313,21 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+
+                                    ### for Keys - Start ###
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
+
+                                    $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
+
+                                    $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+
+                                    $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+
+                                    ### for Keys - End ###
+
                                     
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
@@ -327,11 +339,11 @@
                                     
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.4'),
-                                        ('date', 'April 25, 2020'),
-                                        ('build', '20200425001'),
+                                        ('version', '7.6'),
+                                        ('date', 'September 11, 2020'),
+                                        ('build', '20200811001'),
                                         ('update', '0'),
-                                        ('last_updated', 'April 25, 2020');";
+                                        ('last_updated', 'September 11, 2020');";
                                     $dbconn->query($app_insert);
                                     
                                     $dbconn->query('CREATE TABLE `api_info` (
@@ -392,6 +404,20 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+                                    ### for Keys - Start ###
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
+
+                                    $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
+
+                                    $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+
+                                    $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+
+                                    ### for Keys - End ###
+
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
                                     // $_SESSION['mod'] = 'upgrade';
@@ -402,11 +428,11 @@
                                     
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                    ('version', '7.4'),
-                                    ('date', 'April 25, 2020'),
-                                    ('build', '20200425001'),
+                                    ('version', '7.6'),
+                                    ('date', 'September 11, 2020'),
+                                    ('build', '20200811001'),
                                     ('update', '0'),
-                                    ('last_updated', 'April 25, 2020');";
+                                    ('last_updated', 'September 11, 2020');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
                                     $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
@@ -459,6 +485,20 @@
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
 
+                                    ### for Keys - Start ###
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
+
+                                    $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
+
+                                    $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+
+                                    $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+
+                                    ### for Keys - End ###
+
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
                                     // $_SESSION['mod'] = 'upgrade';
@@ -468,11 +508,11 @@
                                 {
                                     $dbconn->query('TRUNCATE app');
                                     $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
-                                        ('version', '7.4'),
-                                        ('date', 'April 25, 2020'),
-                                        ('build', '20200425001'),
+                                        ('version', '7.6'),
+                                        ('date', 'September 11, 2020'),
+                                        ('build', '20200811001'),
                                         ('update', '0'),
-                                        ('last_updated', 'April 25, 2020');";
+                                        ('last_updated', 'September 11, 2020');";
                                     $dbconn->query($app_insert)or die($dbconn->error);
 
                                     ### for Language - Start ###
@@ -543,6 +583,119 @@
 
                                     $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
                                     $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+
+                                    ### for Keys - Start ###
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
+
+                                    $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
+
+                                    $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+
+                                    $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+
+                                    ### for Keys - End ###
+
+                                    $_SESSION['mod'] = 'upgrade';
+                                    header('Location: Step5.php');
+                                    // $_SESSION['mod'] = 'upgrade';
+                                    exit; 
+                                }
+                                else if ($v == '7.4' || $v == '7.5')
+                                {
+                                    $dbconn->query('TRUNCATE app');
+                                    $app_insert = "INSERT INTO `app` (`name`, `value`) VALUES
+                                        ('version', '7.6'),
+                                        ('date', 'September 11, 2020'),
+                                        ('build', '20200811001'),
+                                        ('update', '0'),
+                                        ('last_updated', 'September 11, 2020');";
+                                    $dbconn->query($app_insert)or die($dbconn->error);
+
+                                    ### for Language - Start ###
+
+                                    $check_language = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'language'") or die($dbconn->error);
+
+                                    $check_language_arr = $check_language->fetch_assoc();
+
+                                    if(count($check_language_arr) > 0)
+                                    {
+                                        $stu_info = $dbconn->query('SELECT * FROM students WHERE language !=\'\'') or die($dbconn->error);
+       
+                                        while ($fetch = $stu_info->fetch_assoc()) {
+                                            $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                            $fetchlang=$stu_lang->fetch_assoc();
+                                            if(count($fetchlang)>0)
+                                                $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                            else
+                                            {
+                                                $dbconn->query('INSERT INTO language (language_name) VALUES (\'' . $fetch['language'] . '\')') or die($dbconn->error);
+                                                $stu_lang = $dbconn->query('SELECT * FROM language WHERE UPPER(language_name)=UPPER(\'' . $fetch['language'] . '\')') or die($dbconn->error); 
+                                                $fetchlang=$stu_lang->fetch_assoc();
+                                                if(count($fetchlang)>0)
+                                                    $dbconn->query('UPDATE students SET language=\''.$fetchlang['language_id'].'\' WHERE student_id='.$fetch['student_id']) or die($dbconn->error);
+                                            }
+                                        }
+                                    }
+
+                                    ### for Language - End ###
+
+                                    ### for Ethnicity - Start ###
+
+                                    $check_ethnicity = $dbconn->query("SHOW COLUMNS FROM `students` LIKE 'ethnicity'") or die($dbconn->error);
+
+                                    $check_ethnicity_arr = $check_ethnicity->fetch_assoc();
+
+                                    if(count($check_ethnicity_arr) > 0)
+                                    {
+                                        $stu_ethn_info = $dbconn->query('SELECT * FROM students WHERE ethnicity !=\'\'') or die($dbconn->error);
+
+                                        while ($ethn_fetch = $stu_ethn_info->fetch_assoc())
+                                        {
+                                            $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                            $fetchethn = $stu_ethn->fetch_assoc();
+                                            
+                                            if(count($fetchethn) > 0)
+                                            {
+                                                $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                            }
+                                            else
+                                            {
+                                                $dbconn->query('INSERT INTO ethnicity (ethnicity_name) VALUES (\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                                $stu_ethn = $dbconn->query('SELECT * FROM ethnicity WHERE UPPER(ethnicity_name)=UPPER(\'' . $ethn_fetch['ethnicity'] . '\')') or die($dbconn->error);
+
+                                                $fetchethn = $stu_ethn->fetch_assoc();
+
+                                                if(count($fetchethn) > 0)
+                                                {
+                                                    $dbconn->query('UPDATE students SET ethnicity=\''.$fetchethn['ethnicity_id'].'\' WHERE student_id='.$ethn_fetch['student_id']) or die($dbconn->error);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    ### for Ethnicity - End ###
+
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `language` `language_id` INT(8) NULL DEFAULT NULL');
+                                    $dbconn->query('ALTER TABLE `students` CHANGE `ethnicity` `ethnicity_id` INT(11) NULL DEFAULT NULL');
+
+                                    ### for Keys - Start ###
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_appstart_check` (`course_period_id`,`period_id`,`syear`,`school_id`,`school_date`)');
+
+                                    $dbconn->query('ALTER TABLE `missing_attendance` ADD KEY `idx_missing_attendance_syear` (`syear`)');
+
+                                    $dbconn->query('ALTER TABLE `login_authentication` ADD KEY `idx_login_authentication_username_password` (`username`,`password`)');
+
+                                    $dbconn->query('ALTER TABLE students ADD INDEX `idx_students_search` (`is_disable`) COMMENT \'Student Info -> search all\'');
+
+                                    $dbconn->query('ALTER TABLE student_enrollment ADD INDEX `idx_student_search` (`school_id`,`syear`,`start_date`,`end_date`,`drop_code`) COMMENT \'Student Info -> search all\'');
+
+                                    ### for Keys - End ###
 
                                     $_SESSION['mod'] = 'upgrade';
                                     header('Location: Step5.php');
