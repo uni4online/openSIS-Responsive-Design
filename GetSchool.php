@@ -28,9 +28,7 @@
 	include('RedirectRootInc.php'); 
 	include'ConfigInc.php';
         include("Warehouse.php");
-// include('functions/SqlSecurityFnc.php');
-
-$marking_period = sqlSecurityFilter($_GET['u']);
+		$marking_period = $_GET['u'];
                 $get_schoolname = DBGet(DBQuery("SELECT school_name FROM  history_marking_periods  WHERE marking_period_id = $marking_period"));
         if($get_schoolname[1]['school_name'])
             echo $get_schoolname[1]['school_name'];

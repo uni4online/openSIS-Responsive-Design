@@ -28,13 +28,6 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 //print_r($_REQUEST);
-if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
-{
-    $_REQUEST['search_modfunc'] = 'list';
-    $_REQUEST['stuid'] = $_SESSION['student_id'];
-    $_REQUEST['sql_save_session'] = 'true';
-}
-
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['st_arr'])) {
 
@@ -42,7 +35,6 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             $_REQUEST['_search_all_schools'] = 'Y';
         }
-        
         $st_list = '\'' . implode('\',\'', $_REQUEST['st_arr']) . '\'';
         $extra['WHERE'] = " AND s.STUDENT_ID IN ($st_list)";
 
@@ -60,9 +52,9 @@ if ($_REQUEST['modfunc'] == 'save') {
             $new_date = DBDate();
         }
 
-        $columns = array('COURSE' => _course, 'MARKING_PERIOD_ID' => _term, 'DAYS' => _days, 'PERIOD_TITLE' => _periodTeacher, 'DURATION' => _time, 'ROOM' => _room);
+        $columns = array('COURSE' => 'Course', 'MARKING_PERIOD_ID' => 'Term', 'DAYS' => 'Days', 'PERIOD_TITLE' => 'Period - Teacher', 'DURATION' => 'Time', 'ROOM' => 'Room');
 
-        $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,r.TITLE as ROOM,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,sp.TITLE AS PERIOD,cpv.DAYS,cpv.COURSE_PERIOD_DATE,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID';
+        $extra['SELECT'] .= ',p_cp.COURSE_PERIOD_ID,r.TITLE as ROOM,CONCAT(sp.START_TIME,\'' . ' to ' . '\', sp.END_TIME) AS DURATION,sp.TITLE AS PERIOD,cpv.DAYS,p_cp.SCHEDULE_TYPE,c.TITLE AS COURSE,p_cp.TITLE AS PERIOD_TITLE,sr.MARKING_PERIOD_ID';
         $extra['FROM'] .= ' LEFT OUTER JOIN schedule sr ON (sr.STUDENT_ID=ssm.STUDENT_ID),courses c,course_periods p_cp,course_period_var cpv,school_periods sp,rooms r ';
 
 //        if($_REQUEST['include_inactive']!='Y')
@@ -80,15 +72,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         if ((isset($_REQUEST['date1']) && $_REQUEST['date1'] != '')) {
             $extra['WHERE'] .= ' AND POSITION(\'' . get_db_day(date('l', strtotime($_REQUEST['date1']))) . '\' IN cpv.days)>0 AND (cpv.COURSE_PERIOD_DATE=\'' . date('Y-m-d', strtotime($_REQUEST['date1'])) . '\' OR cpv.COURSE_PERIOD_DATE IS NULL)';
         }
-
-        if(isset($_REQUEST['include_inactive']) && $_REQUEST['include_inactive'] == 'Y')
-        {
-            $extra['WHERE'] .= ' AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
-        }
-        else
-        {
-            $extra['WHERE'] .= ' AND sr.END_DATE>=\'' . date('Y-m-d') . '\' AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
-        }
+        $extra['WHERE'] .= ' AND sr.END_DATE>=\'' . date('Y-m-d') . '\' AND cpv.ROOM_ID=r.ROOM_ID AND ssm.SYEAR=sr.SYEAR AND sr.COURSE_ID=c.COURSE_ID AND sr.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=p_cp.COURSE_PERIOD_ID AND sp.PERIOD_ID = cpv.PERIOD_ID ';
 
 //        if($_REQUEST['include_inactive']!='Y')
 //        {
@@ -132,9 +116,6 @@ if ($_REQUEST['modfunc'] == 'save') {
                     unset($time);
                     $RET[$ri][$rdi]['DURATION'] = $get_det[1]['DURATION'];
                     $RET[$ri][$rdi]['ROOM'] = $get_det[1]['ROOM'];
-                }elseif ($rdd['SCHEDULE_TYPE'] == 'BLOCKED'){
-                    $columns = array('COURSE' => _course, 'MARKING_PERIOD_ID' => _term, 'DAYS' => _days, 'PERIOD_TITLE' => _periodTeacher, 'DURATION' => _time, 'ROOM' => _room, 'COURSE_PERIOD_DATE' => _date);
-                    $RET[$ri][$rdi]['COURSE_PERIOD_DATE'] = ProperDate($RET[$ri][$rdi]['COURSE_PERIOD_DATE']);
                 }
 //                else
 //                {  
@@ -197,42 +178,42 @@ if ($_REQUEST['modfunc'] == 'save') {
 
             foreach ($RET as $student_id => $courses) {
                 echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentSchedulesReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Schedules Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
 
                 unset($_openSIS['DrawHeader']);
                 echo '<br>';
                 echo '<table  border=0>';
-                echo '<tr><td>'._studentID.':</td>';
+                echo '<tr><td>Student ID:</td>';
                 echo '<td>' . $courses[1]['STUDENT_ID'] . '</td></tr>';
-                echo '<tr><td>'._studentName.':</td>';
+                echo '<tr><td>Student Name:</td>';
                 echo '<td>' . $courses[1]['FULL_NAME'] . '</td></tr>';
-                echo '<tr><td>'._studentGrade.':</td>';
+                echo '<tr><td>Student Grade:</td>';
                 echo '<td>' . $courses[1]['GRADE_ID'] . '</td></tr>';
                 if ($_REQUEST['mailing_labels'] == 'Y') {
                     $mail_address = DBGet(DBQuery('SELECT STREET_ADDRESS_1,STREET_ADDRESS_2,CITY,STATE,ZIPCODE FROM student_address WHERE TYPE=\'Mail\' AND  STUDENT_ID=' . $courses[1]['STUDENT_ID']));
                     $mail_address = $mail_address[1]['STREET_ADDRESS_1'] . ($mail_address[1]['STREET_ADDRESS_2'] != '' ? ' ' . $mail_address[1]['STREET_ADDRESS_2'] : ' ') . '<br>' . $mail_address[1]['CITY'] . ', ' . $mail_address[1]['STATE'] . ' ' . $mail_address[1]['ZIPCODE'];
-                    echo '<tr><td>'._mailingDetails.'</td>';
+                    echo '<tr><td>Mailing Details:</td>';
                     echo '<td>' . ($mail_address != '' ? $mail_address : 'N/A') . '</td></tr>';
                 }
                 echo '</table>';
 
 //			 print_r($courses);
-                ListOutputPrint_sch($courses, $columns, course, courses, array(), array(), array('center' =>false, 'print' =>false));
+                ListOutputPrint_sch($courses, $columns, 'Course', 'Courses', array(), array(), array('center' => false, 'print' => false));
                 echo '<div style="page-break-before: always;">&nbsp;</div><!-- NEW PAGE -->';
             }
             PDFStop($handle);
         } else
-            BackPrompt(_noStudentsWereFound);
+            BackPrompt('No Students were found.');
     } else
-        BackPrompt(_youMustChooseAtLeastOneStudent);
+        BackPrompt('You must choose at least one student.');
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC(""._scheduling." > " . ProgramTitle());
+    DrawBC("Scheduling > " . ProgramTitle());
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         $mp_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,1 AS TBL FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,2 AS TBL FROM school_semesters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' UNION SELECT MARKING_PERIOD_ID,TITLE,SORT_ORDER,3 AS TBL FROM school_quarters WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TBL,SORT_ORDER'));
-        $mp_select = '<SELECT class="form-control" name=mp_id><OPTION value="">'._NA.'';
+        $mp_select = '<SELECT class="form-control" name=mp_id><OPTION value="">N/A';
         foreach ($mp_RET as $mp)
             $mp_select .= '<OPTION value=' . $mp['MARKING_PERIOD_ID'] . '>' . $mp['TITLE'];
         $mp_select .= '</SELECT>';
@@ -241,14 +222,14 @@ if (!$_REQUEST['modfunc']) {
 
         Widgets('mailing_labels', true);
         $extra['extra_header_left'] = '<div class="row">';
-        $extra['extra_header_left'] .= '<div class="col-md-3"><label class="control-label col-md-4">'._markingPeriod.'</label><div class="col-md-8">' . $mp_select . '</div></div>';
-        $extra['extra_header_left'] .= '<div class="col-md-3"><label class="control-label col-md-4">'._includeOnlyCoursesActiveAsOf.'</label><div class="col-md-8">' . DateInputAY('', 'include_active_date', 1) . '</div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-3"><label class="control-label col-md-4">Marking Period</label><div class="col-md-8">' . $mp_select . '</div></div>';
+        $extra['extra_header_left'] .= '<div class="col-md-3"><label class="control-label col-md-4">Include only courses active as of</label><div class="col-md-8">' . DateInputAY('', 'include_active_date', 1) . '</div></div>';
         $extra['extra_header_left'] .= '<div class="col-md-3">' . $extra['search'] . '</div>';
         $extra['search'] = '';
         $extra['extra_header_left'] .= '</div>';
     }
 
-    $extra['link'] = array('FULL_NAME' =>false);
+    $extra['link'] = array('FULL_NAME' => false);
     $extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
     $extra['functions'] = array('CHECKBOX' => '_makeChooseCheckbox');
 //    $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller checked onclick="checkAll(this.form,this.form.controller.checked,\'st_arr\');"><A>');
@@ -269,7 +250,7 @@ if (!$_REQUEST['modfunc']) {
 
     if ($_REQUEST['search_modfunc'] == 'list') {
         if ($_SESSION['count_stu'] != 0)
-            echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value="'._printSchedulesForSelectedStudents.'"></div>';
+            echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value="Create Schedules for Selected Students"></div>';
         echo "</FORM>";
     }
 }

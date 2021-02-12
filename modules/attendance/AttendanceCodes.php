@@ -27,8 +27,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-include('lang/language.php');
-
 if (!isset($_REQUEST['table']))
     $_REQUEST['table'] = 0;
 if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
@@ -95,7 +93,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
     }
 }
 
-DrawBC(""._attendance." > " . ProgramTitle());
+DrawBC("Attendance > " . ProgramTitle());
 
 if ($_REQUEST['new_category_title'] && $_REQUEST['cat_edit_id'] == '') {
 
@@ -140,7 +138,7 @@ if (optional_param('modfunc', '', PARAM_ALPHA) == 'remove') {
         $has_assigned = 0;
     }
     if ($has_assigned > 0) {
-        UnableDeletePrompt(''._cannotDeleteBecauseAttendanceCodesAreAssociated.'.');
+        UnableDeletePrompt('Cannot delete because attendance codes are associated.');
     } else {
         if ($_REQUEST['id']) {
             if (DeletePromptCommon('attendance code')) {
@@ -176,13 +174,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         $attendance_codes_RET = DBGet($QI, array('TITLE' => '_makeTextInput', 'SHORT_NAME' => '_makeTextInput', 'SORT_ORDER' => '_makeTextInput', 'TYPE' => '_makeSelectInput', 'STATE_CODE' => '_makeSelectInput', 'DEFAULT_CODE' => '_makeCheckBoxInput'));
     }
 
-    $columns = array('TITLE' =>_title,
-     'SHORT_NAME' =>_shortName,
-     'SORT_ORDER' =>_sortOrder,
-     'TYPE' =>_type,
-     'DEFAULT_CODE' =>_defaultForTeacherAndOffice,
-     'STATE_CODE' =>_stateCode,
-    );
+    $columns = array('TITLE' => 'Title', 'SHORT_NAME' => 'Short Name', 'SORT_ORDER' => 'Sort Order', 'TYPE' => 'Type', 'DEFAULT_CODE' => 'Default for Teacher and Office', 'STATE_CODE' => 'State Code');
 
     $link['add']['html'] = array('TITLE' => _makeTextInput('', 'TITLE'), 'SHORT_NAME' => _makeTextInput('', 'SHORT_NAME'), 'SORT_ORDER' => _makeTextInput('', 'SORT_ORDER', 'onkeydown=return numberOnlyMod(event,this);'), 'TYPE' => _makeSelectInput('', 'TYPE'), 'DEFAULT_CODE' => _makeCheckBoxInput('', 'DEFAULT_CODE'), 'STATE_CODE' => _makeSelectInput('', 'STATE_CODE'));
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
@@ -192,7 +184,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
 
     echo '<input type="hidden" name="h1" id="h1" value="' . $attandance_id . '">';
 
-    $tabs = array(array('title' => _attendance, 'link' => "Modules.php?modname=$_REQUEST[modname]&table=0"));
+    $tabs = array(array('title' => 'Attendance', 'link' => "Modules.php?modname=$_REQUEST[modname]&table=0"));
     $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY TITLE'));
     foreach ($categories_RET as $category)
         $tabs[] = array('title' => $category['TITLE'], 'link' => "Modules.php?modname=$_REQUEST[modname]&table=" . $category['ID']);
@@ -212,25 +204,25 @@ if ($_REQUEST['modfunc'] != 'remove') {
             echo "<div id='students' >";
             echo PopTable('header', $tabs);
 
-            ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' =>false, 'search' =>false));
+            ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' => false, 'search' => false));
             echo "</div>";
             if ($_REQUEST['table'] != 0) {
-                echo '<div class="pt-15">' . button(_edit, 'Edit category title', "Modules.php?modname=$_REQUEST[modname]&modfunc=edit&table=$_REQUEST[table]") . ' &nbsp;';
+                echo '<div class="pt-15">' . button('edit', 'Edit category title', "Modules.php?modname=$_REQUEST[modname]&modfunc=edit&table=$_REQUEST[table]") . ' &nbsp;';
                 echo button('remove', 'Delete this category', "Modules.php?modname=$_REQUEST[modname]&modfunc=remove&table=$_REQUEST[table]") . '</div>';
             }
-            echo '<hr/>' . SubmitButton(_save, '', 'id="setupAttnCodeBtnOne" class="btn btn-primary" onclick="formcheck_attendance_codes(this);"');
+            echo '<hr/>' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_codes();"');
             echo PopTable('footer');
         } else {
 
             PopTable_wo_header_attn_code('header', $tabs);
-            ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' =>false, 'search' =>false), '', false, false);
-            $btn =  SubmitButton(_save, '', 'id="setupAttnCodeBtnTwo" class="btn btn-primary" onclick="formcheck_attendance_codes(this);"');
+            ListOutput($attendance_codes_RET, $columns, '', '', $link, array(), array('download' => false, 'search' => false), '', false, false);
+            $btn =  SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_codes();"');
             PopTable('footer', $btn);
         }
     } elseif ($_REQUEST['table'] == 'new' && $_REQUEST['modfunc'] != 'edit') {
         $_openSIS['selected_tab'] = "Modules.php?modname=$_REQUEST[modname]&table=$_REQUEST[table]";
         echo PopTable('header', $tabs);
-        echo '<div class="form-group"><label class="control-label col-md-2">'._newCategoryTitle.'</label><div class="col-md-3"><INPUT type=text placeholder="'._newCategoryTitle.'" id=new_category_title name=new_category_title class="form-control"></div><div class="col-md-6">' . SubmitButton(_save, '', 'id="setupAttnCodeBtnThr" class="btn btn-primary" onclick="formcheck_attendance_category(this);"') . '</div></div>';
+        echo '<div class="form-group"><label class="control-label col-md-2">New Category Title</label><div class="col-md-3"><INPUT type=text placeholder="New Category Title" id=new_category_title name=new_category_title class="form-control"></div><div class="col-md-6">' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_category();"') . '</div></div>';
         echo PopTable('footer');
     } elseif ($_REQUEST['table'] !== 'new' && $_REQUEST['modfunc'] == 'edit') {
         $code_cat = DBGet(DBQuery('SELECT TITLE FROM attendance_code_categories WHERE id=' . $_REQUEST['table']));
@@ -239,7 +231,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         echo PopTable('header', $tabs);
         echo '<CENTER>Category Title <INPUT type=text id=new_category_title name=new_category_title value="' . $code_cat . '"></CENTER>';
         echo '<input type=hidden name=cat_edit_id value=' . $_REQUEST['table'] . ' />';
-        echo '<BR><CENTER>' . SubmitButton(_save, '', 'id="setupAttnCodeBtnFou" class="btn btn-primary" onclick="formcheck_attendance_category(this);"') . '</CENTER>';
+        echo '<BR><CENTER>' . SubmitButton('Save', '', 'class="btn btn-primary" onclick="formcheck_attendance_category();"') . '</CENTER>';
         echo PopTable('footer');
     }
     echo '</FORM>';
@@ -278,9 +270,7 @@ function _makeSelectInput($value, $name) {
             $allow_na = 'N/A';
         else
             $allow_na = false;
-        $options = array('teacher' => _teacherOffice,
-         'official' => _officeOnly,
-        );
+        $options = array('teacher' => 'Teacher & Office', 'official' => 'Office Only');
     }
     elseif ($name == 'STATE_CODE') {
         if ($id == 'new')

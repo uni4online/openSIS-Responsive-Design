@@ -27,8 +27,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-echo '<div class="panel">';
-echo '<div class="panel-default">';
 echo '<div class="panel-body">';
 $start_end_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_config WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' AND PROGRAM=\'eligibility\''));
 if (count($start_end_RET)) {
@@ -168,11 +166,7 @@ if ($_REQUEST['values'] && ($_POST['values'] || $_REQUEST['ajax'])) {
 }
 $extra['SELECT'] .= ",'' AS PASSING,'' AS BORDERLINE,'' AS FAILING,'' AS INCOMPLETE";
 $extra['functions'] = array('PASSING' => 'makeRadio', 'BORDERLINE' => 'makeRadio', 'FAILING' => 'makeRadio', 'INCOMPLETE' => 'makeRadio');
-$columns = array('PASSING' =>_passing,
- 'BORDERLINE' =>_borderline,
- 'FAILING' =>_failing,
- 'INCOMPLETE' =>_incomplete,
-);
+$columns = array('PASSING' => 'Passing', 'BORDERLINE' => 'Borderline', 'FAILING' => 'Failing', 'INCOMPLETE' => 'Incomplete');
 
 $stu_RET = GetStuList($extra);
 
@@ -193,7 +187,7 @@ if ($today > $END_DAY || $today < $START_DAY || ($today == $START_DAY && date('G
     } else
         $END_M = 'AM';
 
-    echo '<div class="alert alert-primary alert-styled-left">'._youCanOnlyEnterEligibilityFrom.' ' . $days[$START_DAY] . ' ' . $START_HOUR . ':' . $START_MINUTE . ' ' . $START_M . ' to ' . $days[$END_DAY] . ' ' . $END_HOUR . ':' . $END_MINUTE . ' ' . $END_M . '</div>';
+    echo '<div class="alert alert-primary alert-styled-left">You can only enter eligibility from ' . $days[$START_DAY] . ' ' . $START_HOUR . ':' . $START_MINUTE . ' ' . $START_M . ' to ' . $days[$END_DAY] . ' ' . $END_HOUR . ':' . $END_MINUTE . ' ' . $END_M . '</div>';
 }
 else {
     if (count($stu_RET) != 0) {
@@ -201,23 +195,18 @@ else {
         echo '<div class="col-md-6">';
         echo '<h5 class="m-t-5">' . ProgramTitle() . '</h5>';
         echo '</div>';
-        echo '<div class="col-md-6 text-right"><A class="btn btn-primary" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=gradebook">'._useGradebookGrades.'</A> &nbsp; <INPUT type=submit class="btn btn-primary" value='._save.' onclick="self_disable(this);"></div>';
+        echo '<div class="col-md-6 text-right"><A class="btn btn-primary" href="Modules.php?modname=' . $_REQUEST[modname] . '&modfunc=gradebook">Use Gradebook Grades</A> &nbsp; <INPUT type=submit class="btn btn-primary" value=Save></div>';
         echo '</div>';
         echo '<hr class="m-t-15 m-b-0" />';
     }
 
-    $LO_columns = array('FULL_NAME' =>_student,
-     'STUDENT_ID' =>_studentId,
-     'GRADE_ID' =>_grade,
-     ) + $columns;
-    ListOutput($stu_RET, $LO_columns, _student, _students);
+    $LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $columns;
+    ListOutput($stu_RET, $LO_columns, 'Student', 'Students');
     if (count($stu_RET) != 0)
-        echo '<br><CENTER><INPUT type=submit class="btn btn-primary" value='._save.' onclick="self_disable(this);"></CENTER>';
+        echo '<br><CENTER><INPUT type=submit class="btn btn-primary" value=Save></CENTER>';
 }
 echo "</FORM>";
 echo '</div>'; //.panel-body
-echo '</div>';
-echo '</div>';
 
 function makeRadio($value, $title) {
 

@@ -27,18 +27,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-
-if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false)
-{
-    ##### To come back in teacher programs with only teachers list #####
-    // echo '<pre>';print_r($_SESSION);echo '</pre>';
-
-    if(empty($_SESSION['staf_search']) && !empty($_SESSION['staf_search_hold']))
-    {
-        $_SESSION['staf_search']['sql'] = $_SESSION['staf_search_hold'];
-    }
-}
-
 if (User('PROFILE') == 'admin') {
 
     if (($_REQUEST['modfunc'] == 'search_fnc' || !$_REQUEST['modfunc']) && !$_REQUEST['search_modfunc']) {
@@ -50,21 +38,21 @@ if (User('PROFILE') == 'admin') {
 
         echo '<div class="row">';
         echo '<div class="col-md-12">';
-        PopTable('header',  _findAStaff);
+        PopTable('header', 'Find a Staff');
 
         echo "<FORM name=search class=\"form-horizontal m-b-0\" action=Modules.php?modname=$_REQUEST[modname]&modfunc=list&next_modname=$_REQUEST[next_modname] method=POST>";
 
         echo '<div class="row">';
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._lastName.'</label><div class="col-lg-8"><INPUT type=text placeholder="'._lastName.'" class=form-control name=last></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">Last Name</label><div class="col-lg-8"><INPUT type=text placeholder="Last Name" class=form-control name=last></div></div>';
         echo '</div><div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._firstName.'</label><div class="col-lg-8"><INPUT type=text placeholder="'._firstName.'" class=form-control name=first></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">First Name</label><div class="col-lg-8"><INPUT type=text placeholder="First Name" class=form-control name=first></div></div>';
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row
         
         echo '<div class="row">';
         echo '<div class="col-md-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._username.'</label><div class="col-lg-8"><INPUT type=text placeholder="'._username.'" class=form-control name=username></div></div>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">Username</label><div class="col-lg-8"><INPUT type=text placeholder="Username" class=form-control name=username></div></div>';
         echo '</div><div class="col-md-6">';
         if (User('PROFILE_ID') == 1)
             $qry1 = DBGet(DBQuery('SELECT * FROM user_profiles WHERE profile <> \'' . 'student' . '\' AND profile <> \'' . 'parent' . '\' AND id !=0'));
@@ -97,7 +85,7 @@ if (User('PROFILE') == 'admin') {
                 $options = array($extra['profile'] => $options[$extra['profile']]);
         }
 
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._profile.'</label><div class="col-lg-8"><SELECT class="form-control" name=profile>';
+        echo '<div class="form-group"><label class="control-label col-lg-4">Profile</label><div class="col-lg-8"><SELECT class="form-control" name=profile>';
         foreach ($options as $key => $val) {
             echo '<OPTION value="' . $key . '">' . $val;
         }
@@ -113,13 +101,13 @@ if (User('PROFILE') == 'admin') {
         echo '<div class="row">';
         echo '<div class="col-md-6">';
         if (User('PROFILE') == 'admin')
-            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> '._searchAllSchools.'</label>';
-        echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_dis_user value=Y>'._includeDisabledStaff.'</label>';
+            echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_search_all_schools value=Y' . (Preferences('DEFAULT_ALL_SCHOOLS') == 'Y' ? ' CHECKED' : '') . '> Search All Schools</label>';
+        echo '<label class="checkbox-inline"><INPUT class="styled" type=checkbox name=_dis_user value=Y>Include Disabled Staff</label>';
         echo '</div>'; //.col-md-12
         echo '</div>'; //.row
         
         echo '<hr class="m-b-15"/>';
-        echo "<div class=\"text-right\"><INPUT type=SUBMIT class='btn btn-primary' value='"._submit."' onclick=\"self_disable(this);\"> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='"._reset."'></div>";
+        echo "<div class=\"text-right\"><INPUT type=SUBMIT class='btn btn-primary' value='Submit' onclick='formload_ajax(\"search\");'> &nbsp; <INPUT type=RESET class=\"btn btn-default\" value='Reset'></div>";
 
         /********************for Back to user************************** */
         echo '<input type=hidden name=sql_save_session_staf value=true />';
@@ -139,7 +127,7 @@ if (User('PROFILE') == 'admin') {
             $_REQUEST['next_modname'] = 'users/Staff.php';
 
         if (!isset($_openSIS['DrawHeader']))
-            DrawHeader(_pleaseSelectAStaff);
+            DrawHeader('Please select a Staff');
         if ($_REQUEST['_search_all_schools'] == 'Y')
             $extra['GROUP'] = ' s.STAFF_ID ';
         
@@ -152,13 +140,7 @@ if (User('PROFILE') == 'admin') {
 //        {
         $extra['SELECT'].=',s.STAFF_ID as CATEGORY,la.LAST_LOGIN';    
         $extra['functions']=array('CATEGORY'=>StaffCategory);
-        // }
-
-        if (strpos($_REQUEST['modname'], 'users/TeacherPrograms.php') !== false)
-        {
-            $extra['WHERE'] .= ' AND s.PROFILE_ID NOT IN(0,1) '; 
-        }
-
+//        }
 		$staff_RET = GetUserStaffList($extra);
       if($_REQUEST['_dis_user']=='Y')        
       {
@@ -187,30 +169,16 @@ if (User('PROFILE') == 'admin') {
                 $plural = $singular . ($options[$extra['profile']] == 'none' ? 'es' : 's');
             }
 
-            $columns = array('FULL_NAME' => $singular, 'STAFF_ID' =>_staffId);
+            $columns = array('FULL_NAME' => $singular, 'STAFF_ID' => 'Staff ID');
         } else {
-            $singular = _staff;
-            $plural = _staffs;
+            $singular = 'Staff';
+            $plural = 'Staffs';
             if ($_REQUEST['_dis_user'])
-                $columns = array('FULL_NAME' =>_name,
-                 'CATEGORY' =>_category,
-                'PROFILE' =>_profile,
-                 'STAFF_ID' =>_staffId,
-                 'Status' =>_status,
-                );
-//                $columns = array('FULL_NAME' => 'Staff Member',
-                // 'CATEGORY' => 'Category',
-                // 'PROFILE' => 'Profile',
-                // 'STAFF_ID' =>_staffId,
-                // 'Status' => 'Status',
-                // );
+                $columns = array('FULL_NAME' => 'Name', 'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID', 'Status' => 'Status');
+//                $columns = array('FULL_NAME' => 'Staff Member', 'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID', 'Status' => 'Status');
             else
-                $columns = array('FULL_NAME' =>_name,
-                  'CATEGORY' =>_category,
-                'PROFILE' =>_profile,
-                 'STAFF_ID' =>_staffId,
-                );
-//                $columns = array('FULL_NAME' => 'Staff Member',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' =>_staffId);
+                $columns = array('FULL_NAME' => 'Name',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
+//                $columns = array('FULL_NAME' => 'Staff Member',  'CATEGORY' => 'Category','PROFILE' => 'Profile', 'STAFF_ID' => 'Staff ID');
         
             if($_REQUEST['_search_all_schools']=='Y')
             {

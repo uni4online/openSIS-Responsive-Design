@@ -29,98 +29,105 @@ include('RedirectRootInc.php');
 include('Warehouse.php');
 require_once("Data.php");
 sleep(5);
-$print_form = 1;
-$output_messages = array();
+$print_form=1;
+$output_messages=array();
 //test mysql connection
-ini_set('memory_limit', '9000M');
-ini_set('max_execution_time', '50000');
-ini_set('max_input_time', '50000');
-if (User('PROFILE') == 'admin' && isset($_REQUEST['action']) && $_REQUEST['action'] == 'Backup') {
-  $mysql_host = $DatabaseServer;
-  $mysql_database = $DatabaseName;
-  $mysql_username = $DatabaseUsername;
-  $mysql_password = $DatabasePassword;
-  $mysql_port = $DatabasePort;
+ini_set('memory_limit','9000M');
+ini_set('max_execution_time','50000');
+ini_set('max_input_time','50000');
+if(User('PROFILE')=='admin'&& isset($_REQUEST['action']) && $_REQUEST['action']=='Backup' )
+{
+	$mysql_host=$DatabaseServer;
+	$mysql_database=$DatabaseName;
+	$mysql_username=$DatabaseUsername;
+        $mysql_password=$DatabasePassword;
+        $mysql_port=$DatabasePort;
+        
+        
+        $print_form = 0;
+    $date_time = date("m-d-Y");
 
+    $backup_folder = 'opensis_databackup';
+    if(!is_dir($backup_folder))
+    {
+      mkdir("opensis_databackup");
+    }
 
-  $print_form = 0;
-  $date_time = date("m-d-Y");
-
-  $backup_folder = 'opensis_databackup';
-  if (!is_dir($backup_folder)) {
-    mkdir("opensis_databackup");
-  }
-
-  $Export_FileName = 'opensis_databackup/' . $mysql_database . 'Backup' . $date_time . '.sql';
-  $dbconn = new mysqli($mysql_host, $mysql_username, $mysql_password, $mysql_database, $mysql_port);
-  if ($dbconn->connect_errno != 0)
-    exit($dbconn->error);
-  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
-    $row = $result->fetch_assoc();
-    $mysql_dir1 = substr($row['Value'], 0, 2);
-    $sql_path_arr = explode("\\", $_SERVER['MYSQL_HOME']);
-    $sql_path = "\\" . $sql_path_arr[1] . '\\' . $sql_path_arr[2] . '\\' . $sql_path_arr[3];
-    $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1 . $_SERVER['MYSQL_HOME']);
-    //        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
-  }
-  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    if ($mysql_password == '')
-      exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username  $mysql_database > $Export_FileName");
-    else
-      exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username --password='$mysql_password' $mysql_database > $Export_FileName");
-  } else {
-    exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username --password='$mysql_password' $mysql_database > $Export_FileName");
-  }
-  //$mysql_password=$_REQUEST['mysql_password'];
-
-  //		_mysql_test($mysql_host,$mysql_database, $mysql_username, $mysql_password,$mysql_port);
-  //		
-  //			$print_form=0;
-  //			
-  //                        $date_time=date("m-d-Y");
-  //                    ;
-  //                        $Export_FileName=$mysql_database.'_'.$date_time ;
-  //
-  //
-  //			$myfile = fopen($Export_FileName.".sql", "w");
-  //                        fclose($myfile);
-  //         unset($myfile);
-  //			                        $f_content= "-- Server version:". mysqli_get_server_info()."\n";
-  //                        $f_content= "-- PHP Version: ".phpversion()."\n\n";
-  //                        $f_content.= 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";';
-  //
-  //                        $f_content.= "\n\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n";
-  //                        $f_content.= "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n";
-  //                        $f_content.= "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n";
-  //                        $f_content.= "/*!40101 SET NAMES utf8 */;\n\n";
-  //
-  //                        $f_content.= "--\n";
-  //                        $f_content.= "-- Database: `$mysql_database`\n";
-  //                        $f_content.= "--\n\n";
-  //                        $f_content.= "-- --------------------------------------------------------\n\n";
-  //
-  //
-  //
-  //			$f_content.=_mysqldump($mysql_database) or die('not working');
-  //                        $myfile = fopen($Export_FileName.".sql", "w") or die('not working');
-  //                        fwrite($myfile, $f_content) or die('not working');
-  //                        fclose($myfile) or die('not working');
-  echo _fileSaved;
+    $Export_FileName = 'opensis_databackup/'.$mysql_database . 'Backup' . $date_time . '.sql';
+    $dbconn = new mysqli($mysql_host, $mysql_username, $mysql_password, $mysql_database, $mysql_port);
+    if ($dbconn->connect_errno != 0)
+        exit($dbconn->error);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        $result = $dbconn->query("SHOW VARIABLES LIKE 'basedir'");
+        $row = $result->fetch_assoc();
+        $mysql_dir1 = substr($row['Value'], 0, 2);
+        $sql_path_arr=explode("\\",$_SERVER['MYSQL_HOME']);
+        $sql_path="\\".$sql_path_arr[1].'\\'.$sql_path_arr[2].'\\'.$sql_path_arr[3];
+        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$_SERVER['MYSQL_HOME']);
+//        $mysql_dir = str_replace('\\', '\\\\', $mysql_dir1.$sql_path);
+    }
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($mysql_password == '')
+            exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username  $mysql_database > $Export_FileName");
+        else
+            exec("$mysql_dir\\mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username --password='$mysql_password' $mysql_database > $Export_FileName");
+    }
+    else {
+        exec("mysqldump -n -c --skip-add-locks --skip-disable-keys --routines --triggers --user $mysql_username --password='$mysql_password' $mysql_database > $Export_FileName");
+    }
+	//$mysql_password=$_REQUEST['mysql_password'];
+        
+//		_mysql_test($mysql_host,$mysql_database, $mysql_username, $mysql_password,$mysql_port);
+//		
+//			$print_form=0;
+//			
+//                        $date_time=date("m-d-Y");
+//                    ;
+//                        $Export_FileName=$mysql_database.'_'.$date_time ;
+//
+//
+//			$myfile = fopen($Export_FileName.".sql", "w");
+//                        fclose($myfile);
+//         unset($myfile);
+//			                        $f_content= "-- Server version:". mysqli_get_server_info()."\n";
+//                        $f_content= "-- PHP Version: ".phpversion()."\n\n";
+//                        $f_content.= 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";';
+//
+//                        $f_content.= "\n\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n";
+//                        $f_content.= "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n";
+//                        $f_content.= "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n";
+//                        $f_content.= "/*!40101 SET NAMES utf8 */;\n\n";
+//
+//                        $f_content.= "--\n";
+//                        $f_content.= "-- Database: `$mysql_database`\n";
+//                        $f_content.= "--\n\n";
+//                        $f_content.= "-- --------------------------------------------------------\n\n";
+//
+//
+//
+//			$f_content.=_mysqldump($mysql_database) or die('not working');
+//                        $myfile = fopen($Export_FileName.".sql", "w") or die('not working');
+//                        fwrite($myfile, $f_content) or die('not working');
+//                        fclose($myfile) or die('not working');
+                        echo 'File Saved';
+			
+		
 }
 function _mysqldump($mysql_database)
 {
 
-  $sql = 'show tables where tables_in_' . $mysql_database . ' not like \'course_details%\' and tables_in_' . $mysql_database . ' not like \'enroll_grade%\'
-               and tables_in_' . $mysql_database . ' not like \'marking_periods%\' and tables_in_' . $mysql_database . ' not like \'student_contacts%\' and tables_in_' . $mysql_database . ' not like \'transcript_grades%\' ;';
-  $result = DBGet(DBQuery($sql));
-  $column_name = strtoupper('tables_in_' . $mysql_database);
-  if (count($result) > 0) {
-    foreach ($result as $row) {
-      $f_content_n .= _mysqldump_table_structure($row[$column_name]);
-      $f_content_n .= _mysqldump_table_data($row[$column_name]);
-    }
-    $f_content_n .= "--
+        $sql='show tables where tables_in_'.$mysql_database.' not like \'course_details%\' and tables_in_'.$mysql_database.' not like \'enroll_grade%\'
+               and tables_in_'.$mysql_database.' not like \'marking_periods%\' and tables_in_'.$mysql_database.' not like \'student_contacts%\' and tables_in_'.$mysql_database.' not like \'transcript_grades%\' ;';
+	$result= DBGet(DBQuery($sql));
+        $column_name=strtoupper('tables_in_'.$mysql_database);
+	if( count($result)>0)
+	{
+                foreach($result as $row)
+		{
+                        $f_content_n.= _mysqldump_table_structure($row[$column_name]);
+			$f_content_n.= _mysqldump_table_data($row[$column_name]);
+		}
+	$f_content_n.= "--
               --
               --
 
@@ -191,7 +198,7 @@ function _mysqldump($mysql_database)
             INNER JOIN student_gpa_calculated sgc ON sgc.student_id = rcg.student_id AND sgc.marking_period_id = rcg.marking_period_id
             INNER JOIN schools s ON s.id = mp.school_id;\n
             ";
-    $f_content_n .= "DELIMITER $$
+        $f_content_n.= "DELIMITER $$
 --
 -- Procedures
 --
@@ -203,7 +210,7 @@ END$$
 
 CREATE PROCEDURE `ATTENDANCE_CALC_BY_DATE`(IN sch_dt DATE,IN year INT,IN school INT)
 BEGIN
- DELETE FROM missing_attendance WHERE SCHOOL_DATE=sch_dt AND SYEAR=year AND SCHOOL_ID= _school;
+ DELETE FROM missing_attendance WHERE SCHOOL_DATE=sch_dt AND SYEAR=year AND SCHOOL_ID=school;
  INSERT INTO missing_attendance(SCHOOL_ID,SYEAR,SCHOOL_DATE,COURSE_PERIOD_ID,PERIOD_ID,TEACHER_ID,SECONDARY_TEACHER_ID) SELECT s.ID AS SCHOOL_ID,acc.SYEAR,acc.SCHOOL_DATE,cp.COURSE_PERIOD_ID,cp.PERIOD_ID, IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,tra.pre_teacher_id,cp.teacher_id) AS TEACHER_ID,cp.SECONDARY_TEACHER_ID FROM attendance_calendar acc INNER JOIN marking_periods mp ON mp.SYEAR=acc.SYEAR AND mp.SCHOOL_ID=acc.SCHOOL_ID AND acc.SCHOOL_DATE BETWEEN mp.START_DATE AND mp.END_DATE INNER JOIN course_periods cp ON cp.MARKING_PERIOD_ID=mp.MARKING_PERIOD_ID AND cp.DOES_ATTENDANCE='Y' AND cp.CALENDAR_ID=acc.CALENDAR_ID LEFT JOIN teacher_reassignment tra ON (cp.course_period_id=tra.course_period_id) INNER JOIN school_periods sp ON sp.SYEAR=acc.SYEAR AND sp.SCHOOL_ID=acc.SCHOOL_ID AND sp.PERIOD_ID=cp.PERIOD_ID AND (sp.BLOCK IS NULL AND position(substring('UMTWHFS' FROM DAYOFWEEK(acc.SCHOOL_DATE) FOR 1) IN cp.DAYS)>0 OR sp.BLOCK IS NOT NULL AND acc.BLOCK IS NOT NULL AND sp.BLOCK=acc.BLOCK) INNER JOIN schools s ON s.ID=acc.SCHOOL_ID INNER JOIN schedule sch ON sch.COURSE_PERIOD_ID=cp.COURSE_PERIOD_ID AND sch.START_DATE<=acc.SCHOOL_DATE AND (sch.END_DATE IS NULL OR sch.END_DATE>=acc.SCHOOL_DATE )  LEFT JOIN attendance_completed ac ON ac.SCHOOL_DATE=acc.SCHOOL_DATE AND IF(tra.course_period_id=cp.course_period_id AND acc.school_date<tra.assign_date =true,ac.staff_id=tra.pre_teacher_id,ac.staff_id=cp.teacher_id) AND ac.PERIOD_ID=sp.PERIOD_ID WHERE acc.SYEAR=year AND acc.SCHOOL_ID=school AND (acc.MINUTES IS NOT NULL AND acc.MINUTES>0) AND acc.SCHOOL_DATE=sch_dt AND ac.STAFF_ID IS NULL GROUP BY s.TITLE,acc.SCHOOL_DATE,cp.TITLE,cp.COURSE_PERIOD_ID,cp.TEACHER_ID;
 END$$
 
@@ -598,7 +605,7 @@ END$$
 DELIMITER ;
 -- --------------------------------------------------------\n
 ";
-    $f_content_n .= "--
+$f_content_n.= "--
 -- Triggers `STUDENT_REPORT_CARD_GRADES`
 --
 DROP TRIGGER IF EXISTS `ti_student_report_card_grades`;
@@ -664,118 +671,136 @@ CREATE TRIGGER `td_cal_missing_attendance`
 	DELETE mi.* FROM missing_attendance mi,course_periods cp WHERE mi.course_period_id=cp.course_period_id and cp.calendar_id=OLD.calendar_id AND mi.SCHOOL_DATE=OLD.school_date;
 
 -- --------------------------------------------------------";
-  } else {
-    $f_content_n .= "/* no tables in $mysql_database \n";
-  }
-  //mysql_free_result($result);
-  return $f_content_n;
+        }
+	else
+	{
+		$f_content_n.= "/* no tables in $mysql_database \n";
+	}
+	//mysql_free_result($result);
+        return $f_content_n;
 }
 
 function _mysqldump_table_structure($table)
 {
-  $f_content_ns .= "--\n";
-  $f_content_ns .= "-- Table structure for table `$table` \n";
-  $f_content_ns .= "--\n\n";
+	$f_content_ns.= "--\n";
+        $f_content_ns.= "-- Table structure for table `$table` \n";
+        $f_content_ns.= "--\n\n";
 
-
-  $sql = "show create table `$table`; ";
-  $result = DBGet(DBQuery($sql));
-  if (count($result) > 0) {
-    foreach ($result as $row) {
-      $f_content_ns .= $row['Create Table'] . ";\n\n";
-    }
-  }
-  //mysql_free_result($result);
-  return $f_content_ns;
+       
+	         $sql="show create table `$table`; ";
+		$result=DBGet(DBQuery($sql));
+		if( count($result)>0)
+		{
+			foreach($result as $row)
+			{
+				$f_content_ns.= $row['Create Table'].";\n\n";
+			}
+		}
+		//mysql_free_result($result);
+return $f_content_ns;
 }
 
 function _mysqldump_table_data($table)
 {
-  $sql = 'select * from `' . $table . '`;';
-  $result =  DBQuery($sql);
-  if ($result) {
-    /*
+	$sql='select * from `'.$table.'`;';
+	$result=  DBQuery($sql);
+	if( $result)
+	{
+            /*
 		$num_rows= mysql_num_rows($result);
 		$num_fields= mysql_num_fields($result);
                 $numfields = mysql_num_fields($result);
-            */
-    $num_rows = $result->num_rows;
-    $num_fields = $result->field_count;
-    $numfields = $result->field_count;
-    if ($num_rows > 0) {
+            */    
+                $num_rows= $result->num_rows;
+		$num_fields= $result->field_count;
+                $numfields = $result->field_count;
+		if( $num_rows> 0)
+		{
+			
 
+                        $f_content_nd.= "--\n";
+                        $f_content_nd.= "-- Dumping data for table  `$table` \n";
+                        $f_content_nd.= "--\n";
 
-      $f_content_nd .= "--\n";
-      $f_content_nd .= "-- Dumping data for table  `$table` \n";
-      $f_content_nd .= "--\n";
-
-      $field_type = array();
-      $i = 0;
-      while ($i < $num_fields) {
-        //$meta= mysql_fetch_field($result, $i);
-        $meta = $result->fetch_field();
-        array_push($field_type, $meta->type);
-        //$colfields[] = mysql_field_name($result,$i);
-        $colfields[] = $meta->name;
-        $i++;
-      }
-
-      $f_content_nd .= 'insert into `' . $table . '` (';
-      for ($j = 0; $j < $num_fields; $j++) {
-        if ($j == $num_fields - 1)
-          $f_content_nd .= $colfields[$j];
-        else
-          $f_content_nd .= $colfields[$j] . ',';
-      }
-      $f_content_nd .= ")values\n";
-      $index = 0;
-      //while( $row= mysql_fetch_row($result))
-      while ($row = $result->fetch_row()) {
-        $f_content_nd .= '(';
-        for ($i = 0; $i < $num_fields; $i++) {
-          if (is_null($row[$i]))
-            $f_content_nd .= 'null';
-          else {
-            switch ($field_type[$i]) {
-              case 'int':
-                $f_content_nd .= $row[$i];
-                break;
-              case 'string':
-              case 'blob':
-              default:
-                $f_content_nd .= "'" . mysqli_real_escape_string($row[$i]) . "'";
-            }
-          }
-          if ($i < $num_fields - 1)
-            $f_content_nd .= ',';
-        }
-        $f_content_nd .= ')';
-        if ($index < $num_rows - 1)
-          $f_content_nd .= ',';
-        else
-          $f_content_nd .= ";";
-        $f_content_nd .= "\n";
-        $index++;
-      }
-    }
-  }
-  //mysql_free_result($result);
-  $f_content_nd .= "\n";
-  return $f_content_nd;
+			$field_type=array();
+			$i=0;
+			while( $i <$num_fields)
+			{
+				//$meta= mysql_fetch_field($result, $i);
+                                $meta= $result->fetch_field();
+				array_push($field_type, $meta->type);
+                                //$colfields[] = mysql_field_name($result,$i);
+                                $colfields[] = $meta->name;
+				$i++;
+			}
+			
+			$f_content_nd.= 'insert into `'.$table.'` (';
+                        for($j=0; $j < $num_fields; $j++)
+                        {
+                            if($j==$num_fields-1)
+                            $f_content_nd.= $colfields[$j];
+                        else
+                        $f_content_nd.= $colfields[$j].',';
+                        }
+                        $f_content_nd.= ")values\n";
+			$index=0;
+			//while( $row= mysql_fetch_row($result))
+                        while( $row= $result->fetch_row())
+			{
+				$f_content_nd.= '(';
+				for( $i=0; $i <$num_fields; $i++)
+				{
+					if( is_null( $row[$i]))
+						$f_content_nd.= 'null';
+					else
+					{
+						switch( $field_type[$i])
+						{
+							case 'int':
+								$f_content_nd.= $row[$i];
+								break;
+							case 'string':
+							case 'blob' :
+							default:
+								$f_content_nd.= "'".mysqli_real_escape_string($row[$i])."'";
+						}
+					}
+					if( $i <$num_fields-1)
+						$f_content_nd.= ',';
+				}
+				$f_content_nd.= ')';
+				if( $index <$num_rows-1)
+					$f_content_nd.= ',';
+				else
+					$f_content_nd.= ";";
+				$f_content_nd.= "\n";
+				$index++;
+			}
+		}
+	}
+	//mysql_free_result($result);
+	$f_content_nd.= "\n";
+        return $f_content_nd;
 }
-function _mysql_test($mysql_host, $mysql_database, $mysql_username, $mysql_password, $mysql_port)
+function _mysql_test($mysql_host,$mysql_database, $mysql_username, $mysql_password)
 {
-  global $output_messages;
-  $link = new mysqli($mysql_host, $mysql_username, $mysql_password, $mysql_database, $mysql_port);
-  if (!$link) {
-    array_push($output_messages, '' . _couldNotConnect . ': ' . mysql_error());
-  } else {
-    array_push($output_messages, "" . _connectedWithMySqlServer . ":$mysql_username@$mysql_host successfully");
-    //$db_selected = mysql_select_db($mysql_database, $link);
-    $db_selected = new mysqli($mysql_host, $mysql_username, $mysql_password, $mysql_database, $mysql_port);
-    if (!$db_selected) {
-      array_push($output_messages, '' . _canTUse . ' $mysql_database : ' . mysql_error());
-    } else
-      array_push($output_messages, "" . _connectedWithMySqlDatabase . ":$mysql_database successfully");
-  }
+	global $output_messages;
+	$link = new mysqli($mysql_host, $mysql_username, $mysql_password,$mysql_database,$mysql_port);
+	if (!$link)
+	{
+	   array_push($output_messages, 'Could not connect: ' . mysql_error());
+	}
+	else
+	{
+		array_push ($output_messages,"Connected with MySQL server:$mysql_username@$mysql_host successfully");
+		//$db_selected = mysql_select_db($mysql_database, $link);
+                $db_selected = new mysqli($mysql_host, $mysql_username, $mysql_password,$mysql_database,$mysql_port);
+		if (!$db_selected)
+		{
+			array_push ($output_messages,'Can\'t use $mysql_database : ' . mysql_error());
+		}
+		else
+			array_push ($output_messages,"Connected with MySQL database:$mysql_database successfully");
+	}
 }
+?>

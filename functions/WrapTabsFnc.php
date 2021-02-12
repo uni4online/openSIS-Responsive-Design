@@ -40,7 +40,7 @@ function WrapTabs($tabs, $selected = '', $title = '', $use_blue = false, $type =
             else
                 $tab_len = 0;
 
-            if ($characters + $tab_len >= 1000) {
+            if ($characters + $tab_len >= 180) {
                 $rows[$row] .= "";
                 $row++;
                 $rows[$row] .= "";

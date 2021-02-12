@@ -50,7 +50,7 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                 DBQuery($sql);
 
             if ($error) {
-                ShowErrPhp(_canTEditTypeBecauseItIsNotEditable);
+                ShowErrPhp('Can\'t edit "Type" because it is not editable');
             }
         } else {
             if ($columns[TYPE] != 'Roll' && $columns[TYPE] != 'TrnD' && $columns[TYPE] != 'TrnE') {
@@ -74,13 +74,13 @@ if (clean_param($_REQUEST['values'], PARAM_NOTAGS) && ($_POST['values'] || $_REQ
                     DBQuery($sql);
             }
             else {
-                ShowErrPhp(_youCanTAddAnyEnrollmentCodeInThisType);
+                ShowErrPhp('You can\'t add any enrollment code in this type');
             }
         }
     }
 }
 
-DrawBC(""._students." > " . ProgramTitle());
+DrawBC("Students > " . ProgramTitle());
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
     $select_enroll = DBGet(DBQuery('SELECT TYPE FROM student_enrollment_codes WHERE ID=\'' . $_REQUEST[id] . '\''));
@@ -89,7 +89,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
         $has_assigned_RET = DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM student_enrollment WHERE  ENROLLMENT_CODE=\'' . $_REQUEST[id] . '\''));
         $has_assigned = $has_assigned_RET[1]['TOTAL_ASSIGNED'];
         if ($has_assigned > 0) {
-            UnableDeletePrompt(_cannotDeleteBecauseEnrollmentCodesAreAssociated);
+            UnableDeletePrompt('Cannot delete because enrollment codes are associated.');
         } else {
             if (DeletePromptMod('enrollment code', $_REQUEST['modname'])) {
                 DBQuery('DELETE FROM student_enrollment_codes WHERE ID=\'' . $_REQUEST[id] . '\'');
@@ -97,7 +97,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'remove') {
             }
         }
     } else {
-        UnableDeletePrompt(_cannotDeleteBecauseItIsNotDeletable);
+        UnableDeletePrompt('Cannot delete because it is not deletable.');
     }
 }
 
@@ -106,10 +106,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     $QI = DBQuery($sql);
     $codes_RET = DBGet($QI, array('TITLE' => 'makeTextInput', 'SHORT_NAME' => 'makeTextInput', 'TYPE' => 'makeSelectInput'));
 
-    $columns = array('TITLE' =>_title,
-     'SHORT_NAME' =>_shortName,
-     'TYPE' =>_type,
-    );
+    $columns = array('TITLE' => 'Title', 'SHORT_NAME' => 'Short Name', 'TYPE' => 'Type');
     $link['add']['html'] = array('TITLE' => makeTextInput('', 'TITLE'), 'SHORT_NAME' => makeTextInput('', 'SHORT_NAME'), 'TYPE' => makeSelectInput('', 'TYPE'));
     $link['remove']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=remove";
 
@@ -118,7 +115,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
     echo "<FORM name=F1 id=F1 action=Modules.php?modname=$_REQUEST[modname]&modfunc=update method=POST>";
 
     echo '<div class="panel panel-default">';
-    ListOutput($codes_RET, $columns,  _enrollmentCode, _enrollmentCodes, $link);
+    ListOutput($codes_RET, $columns, 'Enrollment Code', 'Enrollment Codes', $link);
     foreach ($codes_RET as $ci => $cd) {
         $id_arr[$cd['ID']] = $cd['ID'];
     }
@@ -128,7 +125,7 @@ if ($_REQUEST['modfunc'] != 'remove') {
         $id_arr = 0;
     echo '<input type=hidden id=id_arr value="' . $id_arr . '" />';
     echo '<hr class="no-margin" />';
-    echo '<div class="panel-body text-right">' . SubmitButton(_save, '', 'id="setupEncCodeBtn" class="btn btn-primary" onClick=formcheck_enrollment_code(this);') . '</div>';
+    echo '<div class="panel-body text-right">' . SubmitButton('Save', '', 'class="btn btn-primary" onClick=formcheck_enrollment_code();') . '</div>';
     echo '</div>'; //.panel
     echo '</FORM>';
 }
@@ -158,12 +155,7 @@ function makeSelectInput($value, $name) {
         $id = 'new';
 
     if ($name == 'TYPE')
-        $options = array('Add' => _add,
-         'Drop' => _drop,
-         'Roll' => _rollOver,
-         'TrnD' => _dropTransfer,
-         'TrnE' => _enrollTransfer,
-        );
+        $options = array('Add' => 'Add', 'Drop' => 'Drop', 'Roll' => 'Roll Over', 'TrnD' => 'Drop (Transfer)', 'TrnE' => 'Enroll (Transfer)');
 
     return SelectInput($value, 'values[' . $id . '][' . $name . ']', '', $options);
 }

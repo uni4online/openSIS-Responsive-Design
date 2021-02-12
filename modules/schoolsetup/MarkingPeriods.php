@@ -29,9 +29,7 @@
 //print_r($_REQUEST);
 
 include('../../RedirectModulesInc.php');
-include('lang/language.php');
-
-DrawBC(""._schoolSetup." > ".ProgramTitle());
+DrawBC("School Setup > ".ProgramTitle());
 
 if(!$_REQUEST['marking_period_id'] && count($fy_RET = DBGet(DBQuery('SELECT MARKING_PERIOD_ID FROM school_years WHERE SCHOOL_ID=\''.UserSchool().'\' AND SYEAR=\''.UserSyear().'\' ORDER BY SORT_ORDER')))==1 && !$_REQUEST['ajax'])
 {
@@ -47,25 +45,25 @@ switch($_REQUEST['mp_term'])
 	case 'FY':
 		$table = 'school_years';
 		if($_REQUEST['marking_period_id']=='new')
-			$title = _newYear;
+			$title = 'New Year';
 	break;
 
 	case 'SEM':
 		$table = 'school_semesters';
 		if($_REQUEST['marking_period_id']=='new')
-			$title = _newSemester;
+			$title = 'New Semester';
 	break;
 
 	case 'QTR':
 		$table = 'school_quarters';
 		if($_REQUEST['marking_period_id']=='new')
-                    $title = _newQuarter;
+                    $title = 'New Quarter';
 	break;
 
 	case 'PRO':
 		$table = 'school_progress_periods';
 		if($_REQUEST['marking_period_id']=='new')
-			$title = _newProgressPeriod;
+			$title = 'New Progress Period';
 	break;
 }
 $syear='';
@@ -144,7 +142,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                     }
                     if($id!='new')
                         {
-                        $asso_err= false;
+                        $asso_err=false;
                                 if(isset($columns['START_DATE'])){
                                     $check=$columns['START_DATE'];
                                     $check_start=$check;
@@ -170,29 +168,29 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                         $title_mp = $_REQUEST['tables'][$mp_id]['TITLE'];
                                         if(strlen($title_mp) > 25)
                                         {
-                                            $err_msg = ''._titleCannnotBeGreaterThan_25Characters.'';
-                                            $error= true;
+                                            $err_msg = 'Title Cannnot Be Greater Than 25 Characters';
+                                            $error=true;
                                         }
                                         if(array_key_exists('TITLE', $columns) && trim($columns['TITLE']==''))
                                         {
-                                            $err_msg=''._dataNotSavedBecauseTitleCannotBeBlank.'';
-                                            $error= true;
+                                            $err_msg='Data not saved because title cannot be blank';
+                                            $error=true;
                                         }
                                         if(array_key_exists('SHORT_NAME', $columns) && trim($columns['SHORT_NAME']==''))
                                         {
-                                            $err_msg=''._dataNotSavedBecauseShortNameCannotBeBlank.'';
-                                            $error= true;
+                                            $err_msg='Data not saved because short name cannot be blank';
+                                            $error=true;
                                         }
                                          if(array_key_exists('SORT_ORDER', $columns) && trim($columns['SORT_ORDER']!='')) {
                                             if(!is_number($columns['SORT_ORDER']))
                                             {
-                                                $err_msg=''._dataNotSavedBecauseSortOrderAllowsOnlyNumericValue.'';
-                                                $error= true;
+                                                $err_msg='Data not saved because sort order allows only numeric value';
+                                                $error=true;
                                             }
                                          }
                                 if($days<=0)
                                 {
-                                        $err_msg=''._dataNotSavedBecauseStartAndEndDateIsNotValid.'';
+                                        $err_msg='Data not saved because start and end date is not valid';
                                 }
                                 else 
                                 {
@@ -227,20 +225,20 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                              if($days==0)
                                              {
                                                 if($check=='')
-                                                $err_msg=''._pleaseGiveAGradePostingBeginDate.'';    
+                                                $err_msg='Please Give a Grade Posting Begin Date';    
                                                 else
-                                                $err_msg='';
+                                                $err_msg='Please Give a Grade Posting Begins and End Date';
                                              }
                                             else
                                             {
                                                 if($check1=='')
-                                                $err_msg=''._pleaseGiveAGradePostingBeginsAndEndDate.'';    
+                                                $err_msg='Please Give a Grade Posting End Date';    
                                                 elseif($check=='')
-                                                $err_msg=''._pleaseGiveAGradePostingStartDate.'';    
+                                                $err_msg='Please Give a Grade Posting Start Date';    
                                                 else
-                                                $err_msg=''._dataNotSavedBecauseGradePostingDateIsNotValid.'';
+                                                $err_msg='Data not saved because grade posting date is not valid';
                                             }
-                                            $error= true;  
+                                            $error=true;  
                                         }
                                         
                                         if(!(isset($columns['DOES_GRADES'])) && $days<=0)
@@ -249,19 +247,19 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                              {
                                                 if($check=='' && $check1!='')
                                                 {
-                                                $err_msg=''._pleaseGiveAGradePostingBeginDate.'';    
-                                                $error= true;  
+                                                $err_msg='Please Give a Grade Posting Begin Date';    
+                                                $error=true;  
                                                 }
                                              }
                                             else
                                             {
                                                 if($check1=='')
-                                                $err_msg=''._pleaseGiveAGradePostingBeginsAndEndDate.'';    
+                                                $err_msg='Please Give a Grade Posting End Date';    
                                                 elseif($check=='')
-                                                $err_msg=''._pleaseGiveAGradePostingStartDate.'';    
+                                                $err_msg='Please Give a Grade Posting Start Date';    
                                                 else
-                                                $err_msg=''._dataNotSavedBecauseGradePostingDateIsNotValid.'';
-                                                $error= true;  
+                                                $err_msg='Data not saved because grade posting date is not valid';
+                                                $error=true;  
                                             }
                                             
                                         }
@@ -270,22 +268,22 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                         if($graded[1]['DOES_GRADES']=='Y' && !isset($columns['DOES_GRADES']) && $days<=0)
                                         {   
                                             if($days==0)
-                                                $err_msg=''._pleaseGiveAGradePostingBeginsAndEndDate.'';
+                                                $err_msg='Please Give a Grade Posting Begins and End Date';
                                             else
                                             {
                                                 if($check1=='')
-                                                $err_msg=''._pleaseGiveAGradePostingBeginsAndEndDate.'';    
+                                                $err_msg='Please Give a Grade Posting End Date';    
                                                 elseif($check=='')
-                                                $err_msg=''._pleaseGiveAGradePostingStartDate.'';      
+                                                $err_msg='Please Give a Grade Posting Start Date';      
                                                 else
-                                                $err_msg=''._dataNotSavedBecauseGradePostingDateIsNotValid.'';
+                                                $err_msg='Data not saved because grade posting date is not valid';
                                             }
-                                            $error= true;
+                                            $error=true;
                                         }
                                         if(array_key_exists('TITLE', $columns) && trim($columns['TITLE']==''))
                                         {
-                                            $err_msg=''._dataNotSavedBecauseTitleCannotBeBlank.'';
-                                            $error= true;
+                                            $err_msg='Data not saved because title cannot be blank';
+                                            $error=true;
                                         }
                                         if($error!=true)
                                         { 
@@ -303,13 +301,15 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                
                                             if(count($TITLE_COUNT)>0)
                                             {
-                                                $err_msg= _titleAlredayExsits;
-                                                break 2;
+                                                $err_msg='Title alreday exsits';
+                                            break 2;
                                             }
                                             else {
-                                                $sql .= $column.'=\''.singleQuoteReplace('','',trim($value)).'\',';
-                                                $go = true;
-                                                }
+                                                 $sql .= $column.'=\''.singleQuoteReplace('','',trim($value)).'\',';
+                                   
+                                                  $go = true;
+                                                  
+                                                  }
 
                                             }
                                             
@@ -331,7 +331,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                 }
                                                                 else
                                                                 {
-                                                                    $err_msg=""._startDateCannotBeEarlierThan." $nm "._startDate."";
+                                                                    $err_msg="Start date cannot be earlier than $nm start date";
                                                                     break 2;
                                                                 }
                                                             }
@@ -343,7 +343,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                     { 
                                                                         if(strtotime($columns['START_DATE'])<=strtotime($prev_fy_dates['END_DATE']))
                                                                         {
-                                                                            $err_msg=""._startDateCannotBeEarlierThanPreviousYearEndDate."";
+                                                                            $err_msg="Start date cannot be earlier than previous year end date";
                                                                             break 2;
                                                                         }
                                                                         else
@@ -359,7 +359,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             if(strtotime($columns['START_DATE'])>strtotime($attendance_calendar[1]['START_DATE']) && $attendance_calendar[1]['START_DATE']!='')
                                                                             {
                                                                          
-                                                                             $err_msg=""._startDateCannotBeChangedBecauseTheCalenderHasAlreadyBeenCreated."";
+                                                                             $err_msg="Start date cannot be changed  because the calender has already been created";
                                                                              break 2; 
                                                                             }
                                                                             else
@@ -369,7 +369,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                 $students=$students[1]['TOTAL_REC'];
                                                                                 if($students>0 && $syear!=UserSyear())
                                                                                 {
-                                                                                $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithStudents."";
+                                                                                $err_msg="Start date cannot be changed because the FULL YEAR with students";
                                                                                     break 2; 
                                                                                 }
                                                                                 else
@@ -380,7 +380,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                                     if(count($staffs)>0 && $syear!=UserSyear())
                                                                                     {
-                                                                                    $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithStaff."";
+                                                                                    $err_msg="Start date cannot be changed because the FULL YEAR with staff";
                                                                                         break 2; 
                                                                                     }
                                                                                     else
@@ -391,7 +391,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                                         if(count($subjects)>0 && $syear!=UserSyear())
                                                                                         {
-                                                                                        $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithSubjects."";
+                                                                                        $err_msg="Start date cannot be changed because the FULL YEAR with subjects";
                                                                                             break 2; 
                                                                                         }
                                                                                         else
@@ -402,7 +402,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                                             if(count($att_codes)>0 && $syear!=UserSyear())
                                                                                             {
-                                                                                            $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithAttendanceCodes."";
+                                                                                            $err_msg="Start date cannot be changed because the FULL YEAR with attendance codes";
                                                                                                 break 2; 
                                                                                             }
                                                                                             else
@@ -413,7 +413,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                                 
                                                                                                 if(count($sp)>0 && $syear!=UserSyear())
                                                                                                 {
-                                                                                                $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithSchoolPeriods."";
+                                                                                                $err_msg="Start date cannot be changed because the FULL YEAR with school periods";
                                                                                                     break 2; 
                                                                                                 }
                                                                                                 else
@@ -423,7 +423,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                                     $fy=$fy[1];
                                                                                                     if(count($fy)>0 && $syear!=UserSyear())
                                                                                                     {
-                                                                                                        $err_msg=""._startDateCannotBeChangedBecauseTheSyearAlreadyExistsInPreviousYear."";
+                                                                                                        $err_msg="Start date cannot be changed because the SYEAR already exists in previous year";
                                                                                                         break 2;
                                                                                                     }
                                                                                                     else
@@ -457,7 +457,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                     }
                                                                     else
                                                                     {
-                                                                        $err_msg=""._startDateCannotBeAfter." $nm "._startDateCannotBeAfter."";
+                                                                        $err_msg="Start date cannot be after $nm start date";
                                                                         break 2;
                                                                     }
                                                                 }
@@ -465,7 +465,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                 {
                                                                     if(strtotime($columns['START_DATE'])<=strtotime($prev_fy_dates['END_DATE']))
                                                                     {
-                                                                        $err_msg=""._startDateCannotBeEarlierThanPreviousYearEndDate."";
+                                                                        $err_msg="Start date cannot be earlier than previous year end date";
                                                                         break 2;
                                                                     }
                                                                     else
@@ -479,7 +479,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                         if($attendance_calendar[1]['START_DATE']!='' && strtotime($columns['START_DATE'])>strtotime($attendance_calendar[1]['START_DATE']))
                                                                         {
                                                                          
-                                                                        $err_msg=""._startDateCannotBeChangedBecauseTheCalenderHasAlreadyBeenCreated."";
+                                                                        $err_msg="Start date cannot be changed  because the calender has already been created";
                                                                             break 2; 
                                                                         }
                                                                         else
@@ -490,7 +490,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                             if(count($students)>0 && $syear!=UserSyear())
                                                                             {
-                                                                               $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithStudents."";
+                                                                               $err_msg="Start date cannot be changed because the FULL YEAR with students";
                                                                                 break 2; 
                                                                             }
                                                                             else
@@ -501,7 +501,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                                 if(count($staffs)>0 && $syear!=UserSyear())
                                                                                 {
-                                                                                $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithStaff."";
+                                                                                $err_msg="Start date cannot be changed because the FULL YEAR with staff";
                                                                                     break 2; 
                                                                                 }
                                                                                 else
@@ -512,7 +512,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                                     if(count($subjects)>0 && $syear!=UserSyear())
                                                                                     {
-                                                                                    $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithSubjects."";
+                                                                                    $err_msg="Start date cannot be changed because the FULL YEAR with subjects";
                                                                                         break 2; 
                                                                                     }
                                                                                     else
@@ -523,7 +523,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                                         if(count($att_codes)>0 && $syear!=UserSyear())
                                                                                         {
-                                                                                        $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithAttendanceCodes."";
+                                                                                        $err_msg="Start date cannot be changed because the FULL YEAR with attendance codes";
                                                                                             break 2; 
                                                                                         }
                                                                                         else
@@ -534,7 +534,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 
                                                                                             if(count($sp)>0 && $syear!=UserSyear())
                                                                                             {
-                                                                                            $err_msg=""._startDateCannotBeChangedBecauseTheFullYearWithSchoolPeriods."";
+                                                                                            $err_msg="Start date cannot be changed because the FULL YEAR with school periods";
                                                                                                 break 2; 
                                                                                             }
                                                                                             else
@@ -544,7 +544,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                                                 $fy=$fy[1];
                                                                                                 if(count($fy)>0 && $syear!=UserSyear())
                                                                                                 {
-                                                                                                    $err_msg=""._startDateCannotBeChangedBecauseTheSyearAlreadyExistsInPreviousYear."";
+                                                                                                    $err_msg="Start date cannot be changed because the SYEAR already exists in previous year";
                                                                                                     break 2;
                                                                                                 }
                                                                                                 else
@@ -586,7 +586,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                 if(count($scheduleassociation)>0)
                                                                 {
 
-                                                                    $asso_err= true;
+                                                                    $asso_err=true;
                                                                 }
                                                             }
                                                         }
@@ -633,7 +633,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             if($attendance_calendar[1]['END_DATE']!='' && strtotime($end_m)>strtotime($attendance_calendar[1]['END_DATE']))
                                                                             {
                                                                          
-                                                                             $err_msg=""._endDateCannotBeChangedBecauseTheCalendarHasAlreadyBeenCreated."";
+                                                                             $err_msg="End date cannot be changed  because the calendar has already been created";
                                                                              break 2; 
                                                                             }
                                                                         if($value!='')
@@ -667,7 +667,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                             if(strtotime($columns['END_DATE'])<strtotime($attendance_calendar[1]['END_DATE']))
                                                                             {
                                                                          
-                                                                             $err_msg=""._endDateCannotBeChangedBecauseTheCalendarHasAlreadyBeenCreated."";
+                                                                             $err_msg="End date cannot be changed  because the calender has already been created";
                                                                              break 2; 
                                                                             }
                                                                             else{
@@ -691,7 +691,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                 if(count($scheduleassociation)>0)
                                                                 {
 
-                                                                    $asso_err= true;
+                                                                    $asso_err=true;
                                                                 }
                                                             }
                                                         }
@@ -707,7 +707,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                     
                                                                     if(strtotime($value)>=strtotime($check_end))
                                                                     {
-                                                                        $err_msg=""._gradePostingBeginsDateCannotOccurAfterTheMarkingPeriodEndDate."";
+                                                                        $err_msg="Grade Posting Begins date cannot occur after the Marking Period End date";
                                                                         break 2;
                                                                     }
                                                                     
@@ -718,7 +718,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                                     }
                                                                     else
                                                                     {
-                                                                        $err_msg=""._gradePostingBeginsDateCannotOccurBeforeTheMarkingPeriodBeginsDate."";
+                                                                        $err_msg="Grade Posting Begins date cannot occur before the Marking Period Begins date";
                                                                         break 2;
                                                                     }   
                                                                 }
@@ -762,7 +762,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                             {
                                                   if($value=='')
                                                 {
-                                                    $sql .= $column.'=\''._NULL.'\',';
+                                                    $sql .= $column.'=\''.NULL.'\',';
                                                     $go = true;
                                                 }  
                                             }
@@ -773,7 +773,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 //                                            
                                                 
                                                  if($asso_err)
-                                                     $go= false;
+                                                     $go=false;
                                                 
                                         }
                                 }
@@ -818,7 +818,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
 					if($column=='START_DATE' || $column=='END_DATE' || $column=='POST_START_DATE' || $column=='POST_END_DATE')
 					{
 						if(!VerifyDate($value) && $value!='')
-							BackPrompt(''._notAllOfTheDatesWereEnteredCorrectly.'.');
+							BackPrompt('Not all of the dates were entered correctly.');
 					}
 					if($value)
 					{
@@ -843,7 +843,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                 }
                                                 else
                                                 {
-                                                    $err_msg=""._startDateCannotBeEarlierThan." $nm "._startDate."";
+                                                    $err_msg="Start date cannot be earlier than $nm start date";
                                                     $_REQUEST['marking_period_id']='new';
                                                     break 2;
                                                 }
@@ -871,7 +871,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                                                             
                                                             if(strtotime($value)>=strtotime($columns['END_DATE']))
                                                             {
-                                                                $err_msg=""._gradePostingBeginsDateCannotOccurAfterTheMarkingPeriodEndDate."";
+                                                                $err_msg="Grade Posting Begins date cannot occur after the Marking Period End date";
                                                                 $_REQUEST['marking_period_id']='new';
                                                                 break 2;
                                                             }
@@ -969,7 +969,7 @@ if(clean_param($_REQUEST['tables'],PARAM_NOTAGS) && ($_POST['tables'] || $_REQUE
                             }
                         }
                         if($asso_err)
-                            $err_msg=''._startDateOrEndDateCannotBeChangedBecauseMarkingPeriodHasAssociation.'';
+                            $err_msg='Start Date or End Date cannot be changed because marking period has association';
 //----------------------------------------------------------------------------------------------------------------------		
                                             if($go){
                                                 $UserMp=GetCurrentMP('QTR',DBDate());
@@ -1064,7 +1064,7 @@ $has_assigned_RET=DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM course_d
             }
             $assoc_t=implode(',',$assoc_t);
             }
-            UnableDeletePromptMod(''._markingPeriodCannotBeDeletedBecauseItHasAssocitationWith.' '.$assoc_t.'.');
+            UnableDeletePromptMod('Marking period cannot be deleted because it has associtation with '.$assoc_t.'.');
         }
         else{
 	if(DeletePromptMod($name,$queryString))
@@ -1089,7 +1089,7 @@ $has_assigned_RET=DBGet(DBQuery('SELECT COUNT(*) AS TOTAL_ASSIGNED FROM course_d
 if(!$_REQUEST['modfunc'])
 {
 	if($_REQUEST['marking_period_id']!='new')
-		$delete_button = "<INPUT type=button class=\"btn btn-danger\" value="._delete." onClick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&mp_term=$_REQUEST[mp_term]&year_id=$_REQUEST[year_id]&semester_id=$_REQUEST[semester_id]&quarter_id=$_REQUEST[quarter_id]&marking_period_id=$_REQUEST[marking_period_id]\")'>";
+		$delete_button = "<INPUT type=button class=\"btn btn-danger\" value=Delete onClick='load_link(\"Modules.php?modname=$_REQUEST[modname]&modfunc=delete&mp_term=$_REQUEST[mp_term]&year_id=$_REQUEST[year_id]&semester_id=$_REQUEST[semester_id]&quarter_id=$_REQUEST[quarter_id]&marking_period_id=$_REQUEST[marking_period_id]\")'>";
 
 	// ADDING & EDITING FORM
 	if($_REQUEST['marking_period_id'] && $_REQUEST['marking_period_id']!='new')
@@ -1125,18 +1125,18 @@ if(!$_REQUEST['modfunc'])
 
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._title.'</label><div class="col-md-8">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['marking_period_id'] . '][TITLE]', '', 'class=form-control') . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Title</label><div class="col-md-8">' . TextInput($RET['TITLE'], 'tables[' . $_REQUEST['marking_period_id'] . '][TITLE]', '', 'class=form-control') . '</div></div>';
         $header .= '</div><div class="col-md-6">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._shortName.'</label><div class="col-md-8">' . TextInput($RET['SHORT_NAME'], 'tables[' . $_REQUEST['marking_period_id'] . '][SHORT_NAME]', '', 'class=form-control') . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Short Name</label><div class="col-md-8">' . TextInput($RET['SHORT_NAME'], 'tables[' . $_REQUEST['marking_period_id'] . '][SHORT_NAME]', '', 'class=form-control') . '</div></div>';
         $header .= '</div>';
         $header .= '</div>'; //.row
         
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._comments.'</label><div class="col-md-8">' . CheckboxInput_comments($RET['DOES_COMMENTS'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_COMMENTS]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Comments</label><div class="col-md-8">' . CheckboxInput_comments($RET['DOES_COMMENTS'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_COMMENTS]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>') . '</div></div>';
         $header .= '</div><div class="col-md-6">';
         if($RET['DOES_GRADES']!='')
-            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._graded.'</label><div class="col-md-8">' . CheckboxInput_grade($RET['DOES_GRADES'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'true', 'onclick=show_div("tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]",'. $_REQUEST['marking_period_id'] .');') . '</div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Graded</label><div class="col-md-8">' . CheckboxInput_grade($RET['DOES_GRADES'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'true', 'onclick=show_div("tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]",'. $_REQUEST['marking_period_id'] .');') . '</div></div>';
         else
             $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Graded</label><div class="col-md-8">' . CheckboxInput_grade($RET['DOES_GRADES'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', 'true', 'onclick=show_div(\'tables[' . $_REQUEST['marking_period_id'] . '][DOES_GRADES]\',\''. $_REQUEST['marking_period_id'] .'\');') . '</div></div>';
             $header .= '</div>';
@@ -1145,35 +1145,35 @@ if(!$_REQUEST['modfunc'])
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
         if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM) == 'new')
-            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._sortOrder.'</label><div class="col-md-8">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['marking_period_id'] . '][SORT_ORDER]', '', 'class=form-control onKeyDown="return numberOnlyMod(event,this);"') . '</div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Sort Order</label><div class="col-md-8">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['marking_period_id'] . '][SORT_ORDER]', '', 'class=form-control onKeyDown="return numberOnlyMod(event,this);"') . '</div></div>';
         else
-            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._sortOrder.' </label><div class="col-md-8">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['marking_period_id'] . '][SORT_ORDER]', '', 'class=form-control onKeyDown=\"return numberOnlyMod(event,this);\"') . '</div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Sort Order</label><div class="col-md-8">' . TextInput($RET['SORT_ORDER'], 'tables[' . $_REQUEST['marking_period_id'] . '][SORT_ORDER]', '', 'class=form-control onKeyDown=\"return numberOnlyMod(event,this);\"') . '</div></div>';
         $header .= '</div><div class="col-md-6">';
 //        if ($f == 1){
-            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._exam.'</label><div class="col-md-8">' . CheckboxInput_exam($RET['DOES_EXAM'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_EXAM]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true, '' . ($RET['DOES_GRADES'] == "Y" ? '' : 'disabled') . '') . '</div></div>';
+            $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Exam</label><div class="col-md-8">' . CheckboxInput_exam($RET['DOES_EXAM'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_EXAM]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<i class="icon-checkbox-checked"></i>', '<i class="icon-checkbox-unchecked"></i>', true, '' . ($RET['DOES_GRADES'] == "Y" ? '' : 'disabled') . '') . '</div></div>';
 //        }
         $header .= '</div>'; //.col-md-6
         $header .= '</div>'; //.row
         
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._begins.'</label><div class="col-md-8">' . DateInputAY($RET['START_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][START_DATE]', 1) . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Begins</label><div class="col-md-8">' . DateInputAY($RET['START_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][START_DATE]', 1) . '</div></div>';
         $header .= '</div><div class="col-md-6">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._ends.'</label><div class="col-md-8">' . DateInputAY($RET['END_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][END_DATE]', 2) . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Ends</label><div class="col-md-8">' . DateInputAY($RET['END_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][END_DATE]', 2) . '</div></div>';
         $header .= '</div>'; //.col-md-6
         $header .= '</div>'; //.row
         
         $header.= '<div id=grade_div style="' . ($RET['DOES_GRADES'] == 'Y' ? "display:block" : "display:none") . '">';        
         $header .= '<div class="row">';
         $header .= '<div class="col-md-6">';
-        $header.= '<div class="form-group"><label class="col-md-4 control-label text-right">'._gradePostingBegins.'</label><div class="col-md-8">' . DateInputAY($RET['POST_START_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][POST_START_DATE]', 3) . '</div></div>';
+        $header.= '<div class="form-group"><label class="col-md-4 control-label text-right">Grade Posting Begins</label><div class="col-md-8">' . DateInputAY($RET['POST_START_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][POST_START_DATE]', 3) . '</div></div>';
         $header .= '</div><div class="col-md-6">';
-        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">'._gradePostingEnds.'</label><div class="col-md-8">' . DateInputAY($RET['POST_END_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][POST_END_DATE]', 4) . '</div></div>';
+        $header .= '<div class="form-group"><label class="col-md-4 control-label text-right">Grade Posting Ends</label><div class="col-md-8">' . DateInputAY($RET['POST_END_DATE'], 'tables[' . $_REQUEST['marking_period_id'] . '][POST_END_DATE]', 4) . '</div></div>';
         $header .= '</div>'; //.col-md-6
         $header .= '</div>'; //.row
         $header.= '</div>'; //#grade_div
         
-        $str_srch = '<div class="form-group"><label class="col-md-4 control-label text-right">'._comments.'</label><div class="col-md-8">' . CheckboxInput($RET['DOES_COMMENTS'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_COMMENTS]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<IMG SRC=assets/check.gif height=15 vspace=0 hspace=0 border=0>', '<IMG SRC=assets/x.gif height=15 vspace=0 hspace=0 border=0>') . '</div></div>';
+        $str_srch = '<div class="form-group"><label class="col-md-4 control-label text-right">Comments</label><div class="col-md-8">' . CheckboxInput($RET['DOES_COMMENTS'], 'tables[' . $_REQUEST['marking_period_id'] . '][DOES_COMMENTS]', '', $checked, $_REQUEST['marking_period_id'] == 'new', '<IMG SRC=assets/check.gif height=15 vspace=0 hspace=0 border=0>', '<IMG SRC=assets/x.gif height=15 vspace=0 hspace=0 border=0>') . '</div></div>';
 
         $header .= '</div></div>'; //.row /.col-md-6
         DrawHeader($header);
@@ -1181,11 +1181,11 @@ if(!$_REQUEST['modfunc'])
         
         echo '<div>';
         if (clean_param($_REQUEST['marking_period_id'], PARAM_ALPHANUM) == 'new'){
-           echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit value='._save.' id="setupMPBtn" class="btn btn-primary" onclick="return formcheck_school_setup_marking(this);"></div>' : '';
+           echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit value=Save class="btn btn-primary" onclick="return formcheck_school_setup_marking();"></div>' : '';
         }elseif ($_REQUEST['mp_term'] != 'FY'){
-            echo AllowEdit() ? '<hr/><div class="text-right">'.$delete_button . '&nbsp;&nbsp;<INPUT type=submit name=btn_save id=btn_save value='._save.' class="btn btn-primary" onclick="self_disable(this);"></div>' : '';
+            echo AllowEdit() ? '<hr/><div class="text-right">'.$delete_button . '&nbsp;&nbsp;<INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary"></div>' : '';
         }else{
-            echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit name=btn_save id=btn_save value='._save.' class="btn btn-primary" onclick="self_disable(this);" /></div>' : '';
+            echo AllowEdit() ? '<hr/><div class="text-right"><INPUT type=submit name=btn_save id=btn_save value=Save class="btn btn-primary" /></div>' : '';
         }
         echo '</div>';
         
@@ -1197,7 +1197,7 @@ if(!$_REQUEST['modfunc'])
     }
 
     // DISPLAY THE MENU
-    $LO_options = array('save' =>false, 'search' =>false);
+    $LO_options = array('save' => false, 'search' => false);
 
     echo '<div class="row">';
 
@@ -1220,14 +1220,14 @@ if(!$_REQUEST['modfunc'])
 
     echo '<div class="col-md-4">';
     echo '<div class="panel panel-white">';
-    $columns = array('TITLE' =>_year);
+    $columns = array('TITLE' => 'Year');
     $link = array();
     $link['TITLE']['link'] = "#" . " onclick='check_content(\"Ajax.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&mp_term=FY\");'";
     $link['TITLE']['variables'] = array('marking_period_id' => 'MARKING_PERIOD_ID');
     if (!count($fy_RET))
         $link['add']['link'] = "Modules.php?modname=$_REQUEST[modname]&mp_term=FY&marking_period_id=new";
 
-    ListOutput($fy_RET, $columns,  _year, _years, $link, array(), $LO_options);
+    ListOutput($fy_RET, $columns, 'Year', 'Years', $link, array(), $LO_options);
     echo '</div>';
     echo '</div>';
 
@@ -1251,7 +1251,7 @@ if(!$_REQUEST['modfunc'])
 
         echo '<div class="col-md-4">';
         echo '<div class="panel panel-white">';
-        $columns = array('TITLE' => _semester);
+        $columns = array('TITLE' => 'Semester');
         $link = array();
 
         $sem_edate = DBGet(DBQuery('SELECT MAX(END_DATE) AS END_DATE,MIN(START_DATE) as START_DATE FROM school_semesters WHERE SCHOOL_ID=' . UserSchool() . ' AND SYEAR=' . UserSyear()));
@@ -1269,7 +1269,7 @@ if(!$_REQUEST['modfunc'])
         }else{
             $link['add']['link'] = "Modules.php?modname=$_REQUEST[modname]&mp_term=SEM&marking_period_id=new&year_id=$_REQUEST[year_id]";
         }
-        ListOutput($sem_RET, $columns,  _semester, _semesters, $link, array(), $LO_options);
+        ListOutput($sem_RET, $columns, 'Semester', 'Semesters', $link, array(), $LO_options);
         echo '</div>';
         echo '</div>';
 
@@ -1293,7 +1293,7 @@ if(!$_REQUEST['modfunc'])
 
             echo '<div class="col-md-4">';
             echo '<div class="panel panel-white">';
-            $columns = array('TITLE' => _quarter);
+            $columns = array('TITLE' => 'Quarter');
             $link = array();
             $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&mp_term=QTR&year_id=$_REQUEST[year_id]&semester_id=$_REQUEST[semester_id]";
             $link['TITLE']['variables'] = array('marking_period_id' => 'MARKING_PERIOD_ID');
@@ -1307,7 +1307,7 @@ if(!$_REQUEST['modfunc'])
             if ($qtr_edate == '' || $qtr_edate < $sem_edate || $sem_sdate != $qtr_sdate)
                 $link['add']['link'] = "Modules.php?modname=$_REQUEST[modname]&mp_term=QTR&marking_period_id=new&year_id=$_REQUEST[year_id]&semester_id=$_REQUEST[semester_id]";
             
-            ListOutput($qtr_RET, $columns,  _quarter, _quarters, $link, array(), $LO_options);
+            ListOutput($qtr_RET, $columns, 'Quarter', 'Quarters', $link, array(), $LO_options);
             echo '</div>';
             echo '</div>';
 
@@ -1329,7 +1329,7 @@ if(!$_REQUEST['modfunc'])
                 }
 
                 //echo '<TD valign=top>';
-                $columns = array('TITLE' =>_progressPeriod);
+                $columns = array('TITLE' => 'Progress Period');
                 $link = array();
                 $link['TITLE']['link'] = "Modules.php?modname=$_REQUEST[modname]&modfunc=$_REQUEST[modfunc]&mp_term=PRO&year_id=$_REQUEST[year_id]&semester_id=$_REQUEST[semester_id]&quarter_id=$_REQUEST[quarter_id]";
                 $link['TITLE']['variables'] = array('marking_period_id' => 'MARKING_PERIOD_ID');

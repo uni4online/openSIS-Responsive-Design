@@ -29,10 +29,10 @@
 include('../../RedirectModulesInc.php');
   //echo'<div class="alert bg-danger alert-styled-left">Message body cannot be empty</div>';
 if (isset($_REQUEST['del']) && $_REQUEST['del'] == 'true') {
-    echo'<div class="alert bg-success alert-styled-left">'._messageDeletedSucessfully.'</div>';
+    echo'<div class="alert bg-success alert-styled-left">Message deleted sucessfully</div>';
 }
 if ($_REQUEST['failed_user'] == 'Y')
-    echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentAsNoUsersWereFound.'.</div>';
+    echo '<div class="alert bg-danger alert-styled-left">Message not sent as no users were found.</div>';
 if ($_REQUEST['button'] == 'Send') {
     if (User('PROFILE') == 'teacher' && $_REQUEST['cp_id'] != '') {
         if ($_REQUEST['list_gpa_student'] == 'Y') {
@@ -357,8 +357,8 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'trash') {
         }
     } else {
         echo '<BR>';
-        PopTable('header', _alertMessage);
-        echo "<h4 class=\"text-danger\">"._pleaseSelectAtleastOneMessageToDelete."</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value="._ok." onclick='window.location=\"Modules.php?modname=messaging/Inbox.php\"'></FORM>";
+        PopTable('header', 'Alert Message');
+        echo "<h4 class=\"text-danger\">Please select atleast one message to delete</h4><br><FORM action=$PHP_tmp_SELF METHOD=POST><INPUT type=button class='btn btn-primary' name=delete_cancel value=OK onclick='window.location=\"Modules.php?modname=messaging/Inbox.php\"'></FORM>";
         PopTable('footer');
         return false;
     }
@@ -423,7 +423,7 @@ else {
 }
 
 if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
-    //PopTable('header', _messageDetails);
+    //PopTable('header', 'Message Details');
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body">';
     $mail_id = $_REQUEST['mail_id'];
@@ -502,7 +502,7 @@ if (isset($_REQUEST['modfunc']) && $_REQUEST['modfunc'] == 'body') {
         if($v['MAIL_ATTACHMENT']!='')
          {
                echo "
-                  "._attachment.": ";
+                  Attachment: ";
 //          $attach=explode(',',$v['MAIL_ATTACHMENT']);
                $attach= DBGet(DBQuery('SELECT * FROM user_file_upload WHERE ID IN ('.substr($v['MAIL_ATTACHMENT'],0,-1).')'));
           foreach($attach as $user=>$img)
@@ -627,10 +627,7 @@ if (!isset($_REQUEST['modfunc'])) {
     }
 
     echo '<div id="students" class="panel panel-default">';
-    $columns = array('FROM_USER' => _from,
-     'MAIL_SUBJECT' => _subject,
-     'MAIL_DATETIME' => _dateTime,
-    );
+    $columns = array('FROM_USER' => 'FROM', 'MAIL_SUBJECT' => 'SUBJECT', 'MAIL_DATETIME' => 'DATE/TIME');
     $extra['SELECT'] = ",Concat(NULL) AS CHECKBOX";
     $extra['LO_group'] = array('MAIL_ID');
     $extra['columns_before'] = array('CHECKBOX' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'mail\');"><A>');
@@ -650,10 +647,10 @@ if (!isset($_REQUEST['modfunc'])) {
         $inbox_info[$id] = $extra['columns_before'] + $value;
     }
     if (count($inbox_info) != 0) {
-        $custom_header = '<h6 class="panel-title text-pink">'._inbox.'</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> '._delete.'</button></div>';
+        $custom_header = '<h6 class="panel-title text-pink">INBOX</h6><div class="heading-elements"><button type=submit class="btn btn-default heading-btn" onclick=\'formload_ajax("sav");\' ><i class="fa fa-trash-o"></i> Delete</button></div>';
     }
 
-    ListOutput($inbox_info, $columns, '', '', $link, array(), array('search' =>false), TRUE, $custom_header);
+    ListOutput($inbox_info, $columns, '', '', $link, array(), array('search' => false), TRUE, $custom_header);
 
     echo "</div>";
     //PopTable('footer');
@@ -685,7 +682,7 @@ function SendMail($to, $userName, $subject, $mailBody, $attachment, $toCC, $toBC
 
         $outbox_query = DBQuery($q);
     }
-    echo '<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>'._yourMessageHasBeenSent.'.</div>';
+    echo '<div class="alert alert-success alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>Your message has been sent.</div>';
 }
 
 function array_push_assoc($array, $key, $value) {
@@ -853,23 +850,23 @@ function CheckAuthenticMail($userName, $toUsers, $toCCUsers, $toBCCUsers, $grpNa
         SendMail($multipleUser, $userName, $subject, $mailBody, $attachment, $multipleCCUser, $multipleBCCUser, $grpName);
 
         if (count($to_uav_user) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentTo.' ' . implode(',', $to_uav_user) . ' '._asTheyDonTExist.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">Message not sent to ' . implode(',', $to_uav_user) . ' as they don\'t exist.</div><br>';
         if (count($to_uav_cc) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentTo.' ' . implode(',', $to_uav_cc) . ' '._asTheyDonTExist.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">Message not sent to ' . implode(',', $to_uav_cc) . ' as they don\'t exist.</div><br>';
         if (count($to_uav_bcc) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentTo.' ' . implode(',', $to_uav_bcc) . ' '._asTheyDonTExist.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">Message not sent to ' . implode(',', $to_uav_bcc) . ' as they don\'t exist.</div><br>';
     }
     else {
         if (count($to_uav_user) > 0)
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSentAs.' ' . implode(',', $to_uav_user) . ' '._doesnTExist.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">Message not sent as ' . implode(',', $to_uav_user) . ' doesn\'t exist.</div><br>';
         elseif ($toUsers == '')
-            echo '<div class="alert bg-danger alert-styled-left">'._messageNotSent.'.</div><br>';
+            echo '<div class="alert bg-danger alert-styled-left">Message not sent.</div><br>';
     }
 }
 
 function output_file($file, $name, $mime_type = '', $mod_file) {
     if (!is_readable($file))
-        die(''._fileNotFoundOrInaccessible.'!');
+        die('File not found or inaccessible!');
 
     $size = filesize($file);
     $name = rawurldecode($name);

@@ -7,15 +7,15 @@ include 'Warehouse.php';
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-//$_REQUEST['USERINFO_FIRST_NAME']= _;
-//        $_REQUEST['USERINFO_LAST_NAME']= _;
+//$_REQUEST['USERINFO_FIRST_NAME']=;
+//        $_REQUEST['USERINFO_LAST_NAME']=;
 //        
-//        $_REQUEST['USERINFO_EMAIL']= _;
-//        $_REQUEST['USERINFO_MOBILE']= _;
-//        $_REQUEST['USERINFO_SADD']= _;
-//        $_REQUEST['USERINFO_CITY'] = _;
-//        $_REQUEST['USERINFO_STATE'] = _;
-//        $_REQUEST['USERINFO_ZIP']= _;
+//        $_REQUEST['USERINFO_EMAIL']=;
+//        $_REQUEST['USERINFO_MOBILE']=;
+//        $_REQUEST['USERINFO_SADD']=;
+//        $_REQUEST['USERINFO_CITY'] =;
+//        $_REQUEST['USERINFO_STATE'] =;
+//        $_REQUEST['USERINFO_ZIP']=;
 
 //echo $_REQUEST['USERINFO_FIRST_NAME'];
 //echo '<br>';
@@ -79,18 +79,13 @@ else
     }
 }
                 
-$singular = _user;
-$plural = _users;
+$singular = 'User';
+$plural = 'Users';
 $options['save'] = false;
 $options['print'] = false;
 $options['search'] = false;
 
-$columns = array('BUTTON' =>_selectAnyOne,
- 'FULLNAME' =>_name,
- 'USERNAME' =>_username,
- 'EMAIL' =>_email,
- 'STUFULLNAME' =>_associatedStudentSName,
-);
+$columns = array('BUTTON' => 'Select any one', 'FULLNAME' => 'Name', 'USERNAME' => 'Username', 'EMAIL' => 'Email', 'STUFULLNAME' => 'Associated Student\'s Name');
 
 // echo "<pre>";
 // print_r($searched_staffs);

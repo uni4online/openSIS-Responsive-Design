@@ -28,7 +28,6 @@
 include("functions/ParamLibFnc.php");
 //include("functions/UrlFnc.php");
 include('RedirectRootInc.php');
-// include('functions/SqlSecurityFnc.php');
 //$url=validateQueryString(curPageURL());
 //if($url===FALSE)
 // {
@@ -76,7 +75,7 @@ if(optional_param('modname','',PARAM_NOTAGS))
 
 	
 		if(optional_param('LO_save','',PARAM_INT)!='1' && !isset($_REQUEST['_openSIS_PDF']) && (strpos(optional_param($modname,'',PARAM_NOTAGS),'miscellaneous/')===false || $modname=='miscellaneous/Registration.php' || $modname=='miscellaneous/Export.php' || $modname=='miscellaneous/Portal.php'))
-		$_SESSION['_REQUEST_vars'] = sqlSecurityFilter($_REQUEST);
+		$_SESSION['_REQUEST_vars'] = $_REQUEST;
                  $_SESSION['_REQUEST_vars'][]=str_replace('+'," ",$_REQUEST['head_html']);
 
 	$allowed = false;
@@ -137,7 +136,7 @@ if(optional_param('modname','',PARAM_NOTAGS))
 			}
 			
 			
-			echo ""._youReNotAllowedToUseThisProgram."! "._thisAttemptedViolationHasBeenLoggedAndYourIpAddressWasCaptured.".";
+			echo "You're not allowed to use this program! This attempted violation has been logged and your IP address was captured.";
 			DBQuery("INSERT INTO hacking_log (HOST_NAME,IP_ADDRESS,LOGIN_DATE,VERSION,PHP_SELF,DOCUMENT_ROOT,SCRIPT_NAME,MODNAME,USERNAME) values('$_SERVER[SERVER_NAME]','$ip','".date('Y-m-d')."','$openSISVersion','$_SERVER[PHP_SELF]','$_SERVER[DOCUMENT_ROOT]','$_SERVER[SCRIPT_NAME]','$_REQUEST[modname]','".User('USERNAME')."')");
 			Warehouse('footer');
 			if($openSISNotifyAddress)

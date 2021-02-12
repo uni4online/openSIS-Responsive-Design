@@ -27,12 +27,10 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-include('lang/language.php');
-
 $QI = DBQuery("SELECT PERIOD_ID,TITLE FROM school_periods WHERE SCHOOL_ID='" . UserSchool() . "' AND SYEAR='" . UserSyear() . "' ORDER BY SORT_ORDER ");
 $periods_RET = DBGet($QI);
 
-DrawBC(""._scheduling." > " . ProgramTitle());
+DrawBC("Scheduling > " . ProgramTitle());
 echo "<FORM action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . " method=POST>";
 DrawHeader($period_select);
 echo '</FORM>';
@@ -69,8 +67,8 @@ foreach ($periods_RET as $period) {
 if (!$_REQUEST['search_modfunc'])
     Search('student_id', $extra);
 else {
-    $singular = _studentWithAnIncompleteSchedule;
-    $plural = _studentsWithIncompleteSchedules;
+    $singular = 'Student with an incomplete schedule';
+    $plural = 'students with incomplete schedules';
 
     $students_RET = GetStuList($extra);
     $bad_students[0] = array();
@@ -87,7 +85,7 @@ else {
     $link['FULL_NAME']['variables'] = array('student_id' => 'STUDENT_ID');
     echo '<div class="panel panel-default">';
     echo '<div class="table-responsive">';
-    ListOutput($bad_students, array('FULL_NAME' =>_student, 'STUDENT_ID' =>_studentId, 'GRADE_ID' =>_grade) + $extra['columns_after'], $singular, $plural, $link);
+    ListOutput($bad_students, array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $extra['columns_after'], $singular, $plural, $link);
     echo "</div>"; //.table-responsive
     echo "</div>"; //.panel.panel-default
 }

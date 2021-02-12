@@ -96,10 +96,6 @@ div.form-control {
     margin: 6px 0 6px 20px;
     background: #f3f3f3;
 }
-.sidebar-control:dir(rtl) {
-    float: right;
-    margin: 6px 0;
-}
 
 .sidebar-main {
     z-index: 10;
@@ -125,12 +121,6 @@ label.radio {
     margin-bottom: 0;
     height: 50px;
     margin-left: 15px;
-}
-
-#navbar-mobile .form-group:dir(rtl),
-#navbar-mobile form:dir(rtl) {
-    margin-left: 0;
-    margin-right: 15px
 }
 
 #navbar-mobile.navbar-collapse .navbar-nav {
@@ -357,47 +347,6 @@ ul[id*="select2-period-"] {
     top: 15px;
     z-index: 2;
 }
-
-
-/* Schoolwide Schedule Reports - Start */
-.table-black-bg{
-    background: #414141;
-    color: #fff;
-}
-.table-sky-blue-bg{
-    background: #cfe2f3;
-}
-.table-sky-bg{
-    background: #ccfffc;
-}
-.table-pink-bg{
-    background: #f4cccc;
-}
-.table-green-bg{
-    background: #d9ead3;
-}
-#schedule-markup tr th, #schedule-markup tr td{
-    border: 1px solid #414141;
-    padding: 0px 7px;
-}
-.stu_age_holder {
-    position: relative;
-}
-.stu_age {
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-/* Schoolwide Schedule Reports - End */
-
-.btn-undo {
-    background-color: #fff;
-    padding: 6px 8px;
-    border: 1px solid;
-    border-radius: 3px;
-    border-color: inherit;
-}
-
 
 @media (max-width: 768px) {
     #navbar-mobile .form-group, #navbar-mobile form {

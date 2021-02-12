@@ -43,9 +43,8 @@ function map_upload_validation()
 
 
 }
-function valid_mapping_student(option, this_DET)
+function valid_mapping_student(option)
 {
-    var this_button_id = this_DET.id;
 
     var fn = 0;
     var ln = 0;
@@ -386,8 +385,6 @@ function valid_mapping_student(option, this_DET)
         });
         //document.getElementById('mapping').innerHTML = '<div class="alert alert-danger alert-bordered"><button type="button" class="close" data-dismiss="alert"><span>�</span><span class="sr-only">Close</span></button><span class="text-semibold">' + msg + '</span><br/>' + error + '</div>';
 
-        document.getElementById(this_button_id).disabled = false;
-
         return false;
     }
     if (mapping_error != '')
@@ -402,21 +399,13 @@ function valid_mapping_student(option, this_DET)
             type: 'error',
             layout: 'top'
         });
-
-        document.getElementById(this_button_id).disabled = false;
-
         return false;
     }
 
-    setTimeout(function() {
-        document.getElementById(this_button_id).disabled = true;
-    }, 50);
 }
 
-function valid_mapping_staff(option, this_DET)
+function valid_mapping_staff(option)
 {
-    var this_button_id = this_DET.id;
-
     var sn = 0;
     var fn = 0;
     var ln = 0;
@@ -570,9 +559,6 @@ function valid_mapping_staff(option, this_DET)
             layout: 'top'
         });
         //document.getElementById('mapping').innerHTML = "<span style='color:red;font-weight:bold;font-size:12px'>" + msg + "<br>" + error + "</span>";
-        
-        document.getElementById(this_button_id).disabled = false;
-
         return false;
     }
     if (mapping_error != '')
@@ -586,15 +572,9 @@ function valid_mapping_staff(option, this_DET)
             layout: 'top'
         });
         //document.getElementById('mapping').innerHTML = "<span style='color:red;font-weight:bold;font-size:12px'>" + msg + "<br>" + mapping_error + "</span>";
-        
-        document.getElementById(this_button_id).disabled = false;
-
         return false;
     }
 
-    setTimeout(function() {
-        document.getElementById(this_button_id).disabled = true;
-    }, 50);
 }
 function ajax_progress(option)
 {

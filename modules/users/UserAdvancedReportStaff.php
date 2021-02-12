@@ -27,7 +27,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-include('lang/language.php');
 
 if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
     if (count($_SESSION['st_arr'])) {
@@ -35,7 +34,7 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'save') {
         $extra['WHERE'] = ' AND s.STAFF_ID IN (' . $st_list . ')';
 
         echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._userAdvancedReport."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis."</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+        echo "<tr><td width=105>" . DrawLogo() . "</td><td style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">User Advanced Report</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
         echo "<table >";
         include('modules/miscellaneous/UserExport.php');
     }
@@ -50,17 +49,17 @@ if (clean_param($_REQUEST['modfunc'], PARAM_ALPHAMOD) == 'call') {
     echo '<div class="panel-body">';
     include('modules/miscellaneous/UserExport.php');
     echo '</div>';
-    echo '<div class="panel-footer text-right"><div class="heading-elements"><INPUT type=submit value="'._createReportForSelectedUsers.'" class="btn btn-primary"></div></div>';
+    echo '<div class="panel-footer text-right"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
     echo '</div>';
     echo "</FORM>";
 }
 
 if (!$_REQUEST['modfunc'] || $_REQUEST['modfunc'] == 'list') {
-    DrawBC(""._users." > " . ProgramTitle());
+    DrawBC("users > " . ProgramTitle());
 
     if ($_REQUEST['modfunc'] == 'list') {
 
-        $extra['columns_after'] = array('LAST_LOGIN' =>_lastLogin);
+        $extra['columns_after'] = array('LAST_LOGIN' => 'Last Login');
         $extra['functions'] = array('LAST_LOGIN' => 'makeLogin');
 
         $extra['SELECT'] = ',LAST_LOGIN,CONCAT(\'<INPUT type=checkbox name=st_arr[] value=\',s.STAFF_ID,\' checked>\') AS CHECKBOX';
@@ -75,15 +74,12 @@ if (!$_REQUEST['modfunc'] || $_REQUEST['modfunc'] == 'list') {
         if ($_REQUEST['_search_all_schools'])
             echo '<INPUT type=hidden name=_search_all_schools value=' . strip_tags(trim($_REQUEST['_search_all_schools'])) . '>';
         
-        echo '<div class="panel panel-default">';
         SearchStaff('staff_id', $extra);
         
         if ($_SESSION['count_stf'] != '0') {
             unset($_SESSION['count_stf']);
-            echo '<div class="panel-footer text-right"><div class="heading-elements"><INPUT type=submit value="'._createReportForSelectedUsers.'" class="btn btn-primary" onclick="self_disable(this);"></div></div>';
+            echo '<div class="text-right"><INPUT type=submit value="Create Report for Selected users" class="btn btn-primary"></div>';
         }
-
-        echo '</div>';
         
         echo "</FORM>";
     } else {
