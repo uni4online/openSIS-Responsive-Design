@@ -28,8 +28,6 @@
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
 
-include "lang/language.php";
-
 while (!UserSyear()) {
     session_write_close();
     session_start();
@@ -38,7 +36,7 @@ while (!UserSyear()) {
 $this_portal_toggle = "";
 
 $current_hour = date('H');
-$welcome .= ''._user.' : ' . User('NAME');
+$welcome .= 'User : ' . User('NAME');
 // if ($_SESSION['LAST_LOGIN'])
 //    $welcome .= ' | Last login : ' . ProperDate(substr($_SESSION['LAST_LOGIN'], 0, 10)) . ' at ' . substr($_SESSION['LAST_LOGIN'], 10);
 // if ($_SESSION['FAILED_LOGIN'])
@@ -55,7 +53,7 @@ $welcome .= ''._user.' : ' . User('NAME');
 //    }
 // }
 
-echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">'._pleaseWait.'.</span> '._compilingMissingAttendanceData.'. '._doNotClickAnywhere.'.</div>
+echo '<div id="calculating" style="display: none;" class="alert alert-info alert-bordered"><i class="fa fa-cog fa-spin fa-lg fa-fw"></i><span class="text-semibold">Please wait.</span> Compiling missing attendance data. Do not click anywhere.</div>
 <div id="resp"></div>';
 $stu_missing_atten = DBGet(DBQuery('SELECT * FROM missing_attendance WHERE syear=\'' . UserSyear() . '\''));
 
@@ -114,26 +112,25 @@ $in = $in[1]['TOTAL'];
 $inbox_info = $total_count - $in;
 if ($inbox_info > 1) {
     echo '<div class="alert alert-danger alert-bordered">';
-    echo '<i class="fa fa-info-circle"></i> '._youHave.' ' . $inbox_info . ' '._unreadMessages.'';
+    echo '<i class="fa fa-info-circle"></i> You have ' . $inbox_info . ' unread messages';
     echo '</div>';
 } else {
     if ($inbox_info == 1) {
         echo '<div class="alert alert-danger alert-bordered">';
-        echo '<i class="fa fa-info-circle"></i> '._youHaveOneUnreadMessage.'';
+        echo '<i class="fa fa-info-circle"></i> You have 1 unread message';
         echo '</div>';
     }
 }
 
 if ($_SESSION['PROFILE_ID'] == 0)
-    $title1 = _superAdministrator;
+    $title1 = 'Super Administrator';
 if ($_SESSION['PROFILE_ID'] == 1)
-    $title1 = _administrator;
-// echo $_SESSION['PROFILE_ID'];
+    $title1 = 'Administrator';
 
 switch (User('PROFILE')) {
 
     case 'admin':
-        DrawBC($welcome . ' | '._role.' : ' . $title1);
+        DrawBC($welcome . ' | Role : ' . $title1);
 
 
 
@@ -212,7 +209,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
 
                 echo '<div class="panel panel-flat">
                         <div class="panel-heading">
-                            <h6 class="panel-title">'._pleaseCompleteTheSetupBeforeUsingTheSystemTheFollowingComponentsNeedToBeSet.'</h6>
+                            <h6 class="panel-title">Please complete the setup before using the system. The following components need to be set:</h6>
                             <div class="heading-elements">
                                 <div class="progress">
                                     <div class="progress-bar progress-bar-success" style="width: ' . $percent . '%;">
@@ -228,7 +225,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/Calendar.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/Calendar.php\');">' : '') . '<i class="icon-calendar3"></i>' . (AllowUse('schoolsetup/Calendar.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/Calendar.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/Calendar.php\');">' : '') . ''._calendarSetup.' ' . ($cal_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('schoolsetup/Calendar.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/Calendar.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/Calendar.php\');">' : '') . 'Calendar Setup ' . ($cal_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('schoolsetup/Calendar.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +236,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/MarkingPeriods.php\');">' : '') . '<i class="icon-tree7"></i>' . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/MarkingPeriods.php\');">' : '') . ''._markingPeriodSetup.'</a> ' . ($mp_setup[1]['REC'] > 1 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/MarkingPeriods.php\');">' : '') . 'Marking Period Setup</a> ' . ($mp_setup[1]['REC'] > 1 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('schoolsetup/MarkingPeriods.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -249,7 +246,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('attendance/AttendanceCodes.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=attendance/AttendanceCodes.php\');">' : '') . '<i class="icon-clipboard5"></i>' . (AllowUse('attendance/AttendanceCodes.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('attendance/AttendanceCodes.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=attendance/AttendanceCodes.php\');">' : '') . ''._attendanceCodeSetup.' ' . ($att_code_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('attendance/AttendanceCodes.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('attendance/AttendanceCodes.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=attendance/AttendanceCodes.php\');">' : '') . 'Attendance Code Setup ' . ($att_code_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('attendance/AttendanceCodes.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -259,7 +256,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('grades/ReportCardGrades.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=grades/ReportCardGrades.php\');">' : '') . '<i class="icon-stack3"></i>' . (AllowUse('grades/ReportCardGrades.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('grades/ReportCardGrades.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=grades/ReportCardGrades.php\');">' : '') . ''._gradeScaleSetup.' ' . ($grade_scale_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('grades/ReportCardGrades.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('grades/ReportCardGrades.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=grades/ReportCardGrades.php\');">' : '') . 'Grade Scale Setup ' . ($grade_scale_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('grades/ReportCardGrades.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -269,7 +266,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('students/EnrollmentCodes.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=students/EnrollmentCodes.php\');">' : '') . '<i class="icon-clipboard6"></i>' . (AllowUse('students/EnrollmentCodes.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('students/EnrollmentCodes.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=students/EnrollmentCodes.php\');">' : '') . ''._enrollmentCodeSetup.' ' . ($enroll_code_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('students/EnrollmentCodes.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('students/EnrollmentCodes.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=students/EnrollmentCodes.php\');">' : '') . 'Enrollment Code Setup ' . ($enroll_code_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('students/EnrollmentCodes.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -279,7 +276,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/GradeLevels.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/GradeLevels.php\');">' : '') . '<i class="icon-graph"></i>' . (AllowUse('schoolsetup/GradeLevels.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/GradeLevels.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/GradeLevels.php\');">' : '') . ''._gradeLevelSetup.' ' . ($grade_level_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('schoolsetup/GradeLevels.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/GradeLevels.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/GradeLevels.php\');">' : '') . 'Grade Level Setup ' . ($grade_level_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('schoolsetup/GradeLevels.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -289,7 +286,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/Periods.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/Periods.php\');">' : '') . '<i class="icon-watch2"></i>' . (AllowUse('schoolsetup/Periods.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/Periods.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/Periods.php\');">' : '') . ''._schoolPeriodsSetup.' ' . ($periods_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('schoolsetup/Periods.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/Periods.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/Periods.php\');">' : '') . 'School Periods Setup ' . ($periods_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('schoolsetup/Periods.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -299,7 +296,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                                         <div class="media-left media-middle">' . (AllowUse('schoolsetup/Rooms.php') == true ? '<a href="javascript:void(0);" class="btn border-indigo-400 text-indigo-400 btn-flat btn-rounded btn-xs btn-icon" onClick="check_content(\'Ajax.php?modname=schoolsetup/Rooms.php\');">' : '') . '<i class="icon-grid6"></i>' . (AllowUse('schoolsetup/Rooms.php') == true ? '</a>' : '') . '</div>
 
                                         <div class="media-left">
-                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/Rooms.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/Rooms.php\');">' : '') . ''._roomsSetup.' ' . ($rooms_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> '._complete.'</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> '._incomplete.'</small>') . (AllowUse('schoolsetup/Rooms.php') == true ? '</a>' : '') . '</h6>
+                                            <h6 class="text-semibold no-margin">' . (AllowUse('schoolsetup/Rooms.php') == true ? '<a href="javascript:void(0);" onClick="check_content(\'Ajax.php?modname=schoolsetup/Rooms.php\');">' : '') . 'Rooms Setup ' . ($rooms_setup[1]['REC'] > 0 ? '<small class="display-block no-margin text-success"><i class="icon-checkmark2"></i> Complete</small>' : '<small class="display-block no-margin text-danger"><i class="icon-cross3"></i> Incomplete</small>') . (AllowUse('schoolsetup/Rooms.php') == true ? '</a>' : '') . '</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -391,11 +388,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
       
                         if (count($notes_RET)) {
             echo '<div class="panel panel-default">';
-            ListOutput($notes_RET, array('LAST_UPDATED' =>_datePosted,
-             'TITLE' =>_title,
-             'CONTENT' =>_note,
-             'SCHOOL' =>_school,
-            ), _note, _notes, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($notes_RET, array('LAST_UPDATED' => 'Date Posted', 'TITLE' => 'Title', 'CONTENT' => 'Note', 'SCHOOL' => 'School'), 'Note', 'Notes', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
             
@@ -461,11 +454,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         }
         if (count($events_RET)) {
             echo '<div class="panel panel-default">';
-            ListOutput($events_RET, array('SCHOOL_DATE' =>_date,
-             'TITLE' =>_event,
-             'DESCRIPTION' =>_description,
-             'SCHOOL' =>_school,
-            ), _upcomingEvent, _upcomingEvents, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($events_RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description', 'SCHOOL' => 'School'), 'Upcoming Event', 'Upcoming Events', array(), array(), array('save' => false, 'search' => false));
             echo '</div>'; //.panel
         }
 
@@ -483,11 +472,11 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
             if (count($RET)) {
                 echo '<div class="alert alert-danger alert-styled-left alert-bordered">';
                 //echo '<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>';
-                echo '<span class="text-bold">'._warning.'!!</span> - '._teachersHaveMissingAttendance.'. '._go_To.': <span class="text-bold">'._users.' <i class="icon-arrow-right13"></i>'._teacherPrograms.' <i class="icon-arrow-right13"></i> '._missingAttendance.'.</span>';
+                echo '<span class="text-bold">Warning!!</span> - Teachers have missing attendance. Go to : <span class="text-bold">Users <i class="icon-arrow-right13"></i> Teacher Programs <i class="icon-arrow-right13"></i> Missing Attendance.</span>';
                 echo '</div>';
             }
         }
-        echo '<div id="attn_alert" style="display: none" class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">'._warning.'!!</span> - '._teachersHaveMissingAttendance.'. '._go_To.' : <b>Users <i class="icon-arrow-right13"></i> '._teacherPrograms.'<i class="icon-arrow-right13"></i>'._missingAttendance.'</b></div>';
+        echo '<div id="attn_alert" style="display: none" class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">Warning!!</span> - Teachers have missing attendance. Go to : <b>Users <i class="icon-arrow-right13"></i> Teacher Programs <i class="icon-arrow-right13"></i> Missing Attendance</b></div>';
         //-------------------------------------------------------------------------------ROLLOVER NOTIFICATION STARTS----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         $notice_date = DBGet(DBQuery('SELECT END_DATE FROM school_years WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -496,7 +485,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         $last_date = strtotime($notice_date[1]['END_DATE']) - strtotime(DBDate());
         $last_date = $last_date / (60 * 60 * 24);
         if ($last_date <= 15 && $rolled == 0) {
-            echo '<div class="alert alert-danger alert-bordered"><i class="icon-alert"></i> '._schoolYearIsEndingOrHasEndedRolloverRequired.'.</div>';
+            echo '<div class="alert alert-danger alert-bordered"><i class="icon-alert"></i> School year is ending or has ended. Rollover required.</div>';
         }
         //-------------------------------------------------------------------------------ROLLOVER NOTIFICATION ENDS----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -504,7 +493,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         break;
 
     case 'teacher':
-        DrawBC($welcome . ' | '._role.' : '._teacher.'');
+        DrawBC($welcome . ' | Role : Teacher');
         $att_qry = DBGet(DBQuery('SELECT Count(1) as count FROM  profile_exceptions WHERE MODNAME 
                   IN (\'attendance/TakeAttendance.php\',\'attendance/DailySummary.php\',\'attendance/StudentSummary\') AND 
                   PROFILE_ID=' . User('PROFILE_ID') . ' AND CAN_USE=\'Y\' '));
@@ -539,11 +528,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
 
         if (count($notes_RET)) {
             echo '<div class="panel panel-default">';
-            ListOutput($notes_RET, array('LAST_UPDATED' =>_datePosted,
-             'TITLE' =>_title,
-             'CONTENT' =>_note,
-             'SCHOOL' =>_school,
-            ), _note, _notes, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($notes_RET, array('LAST_UPDATED' => 'Date Posted', 'TITLE' => 'Title', 'CONTENT' => 'Note', 'SCHOOL' => 'School'), 'Note', 'Notes', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
         
@@ -578,11 +563,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         }
         if (count($events_RET)) {
             echo '<div class="panel panel-default">';
-            ListOutput($events_RET, array('SCHOOL_DATE' =>_date,
-             'TITLE' =>_event,
-             'DESCRIPTION' =>_description,
-             'SCHOOL' =>_school,
-            ), _upcomingEvent, _upcomingEvents, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($events_RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description', 'SCHOOL' => 'School'), 'Upcoming Event', 'Upcoming Events', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
         if ($att_qry[1]['count'] != 0)
@@ -601,7 +582,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
             $codes_RET_count = DBGet(DBQuery('SELECT COUNT(*) AS CODES FROM attendance_codes WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\'  AND TYPE=\'teacher\' AND TABLE_NAME=\'0\' ORDER BY SORT_ORDER'));
 
             if (count($RET) && $codes_RET_count[1]['CODES']) {
-                echo '<div class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">'._warning.'!</span> '._teachersHaveMissingAttendanceData.'.</div>';
+                echo '<div class="alert alert-danger alert-styled-left alert-bordered"><span class="text-bold">Warning!</span> Teachers have missing attendance data.</div>';
 
                 $modname = 'users/TeacherPrograms.php?include=attendance/TakeAttendance.php';
                 $link['remove']['link'] = "Modules.php?modname=$modname&modfunc=attn&attn=miss&from_dasboard=1";
@@ -609,10 +590,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                 $_SESSION['take_mssn_attn'] = true;
 
                 echo '<div class="panel panel-default">';
-                ListOutput_missing_attn_teach_port($RET, array('SCHOOL_DATE' => _date,
-                 'TITLE' => _periodTeacher,
-                 'SCHOOL' => _school,
-                ), _period, _periods, $link, array(), array('save' =>false, 'search' =>false));
+                ListOutput_missing_attn_teach_port($RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Period -Teacher', 'SCHOOL' => 'School'), 'Period', 'Periods', $link, array(), array('save' => false, 'search' => false));
                 echo '</div>';
             }
         }
@@ -622,7 +600,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         break;
 
     case 'parent':
-        DrawBC($welcome . ' | '._role.' : '._parent.'');
+        DrawBC($welcome . ' | Role : Parent');
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.school_id IS NULL,\'All School\',(SELECT TITLE FROM schools WHERE id=pn.school_id)) AS SCHOOL,pn.LAST_UPDATED,pn.TITLE,pn.CONTENT 
             FROM portal_notes pn
             WHERE pn.SYEAR=\'' . UserSyear() . '\' 
@@ -633,11 +611,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
 
         if (count($notes_RET)) {
             echo '<div class="panel">';
-            ListOutput($notes_RET, array('LAST_UPDATED' =>_datePosted,
-             'TITLE' =>_title,
-             'CONTENT' =>_note,
-             'SCHOOL' =>_school,
-            ), _note, _notes, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($notes_RET, array('LAST_UPDATED' => 'Date Posted', 'TITLE' => 'Title', 'CONTENT' => 'Note', 'SCHOOL' => 'School'), 'Note', 'Notes', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
 
@@ -670,11 +644,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         }
         if (count($events_RET)) {
             echo '<div class="panel">';
-            ListOutput($events_RET, array('SCHOOL_DATE' =>_date,
-             'TITLE' =>_event,
-             'DESCRIPTION' =>_description,
-             'SCHOOL' =>_school,
-            ), _upcomingEvent, _upcomingEvents, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($events_RET, array('SCHOOL_DATE' => 'Date', 'TITLE' => 'Event', 'DESCRIPTION' => 'Description', 'SCHOOL' => 'School'), 'Upcoming Event', 'Upcoming Events', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
 
@@ -722,12 +692,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
             if (count($assignments_RET)) {
 
 
-                $LO_columns = array('TITLE' =>_title,
-                 'CATEGORY' =>_category,
-                 'ASSIGNED_DATE' =>_assignedDate,
-                 'DUE_DATE' =>_dueDate,
-                 'COMMENT' =>_description,
-                );
+                $LO_columns = array('TITLE' => 'Title', 'CATEGORY' => 'Category', 'ASSIGNED_DATE' => 'Assigned Date', 'DUE_DATE' => 'Due Date', 'COMMENT' => 'Description');
 
                 $LO_ret = array(0 => array());
                 foreach ($assignments_RET as $assignment) {
@@ -738,7 +703,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
                 DrawHeader('<span class="text-pink">Subject - ' . substr($course['TITLE'] . '</span>', strrpos(str_replace(' - ', ' ^ ', $course['TITLE']), '^')));
                 echo '<hr class="no-margin" />';
                 unset($LO_ret[0]);
-                ListOutput($LO_ret, $LO_columns,  _assignment, _assignments, array(), array(), array('center' =>false, 'save' => $_REQUEST['id'] != 'all', 'search' =>false));
+                ListOutput($LO_ret, $LO_columns, 'Assignment', 'Assignments', array(), array(), array('center' => false, 'save' => $_REQUEST['id'] != 'all', 'search' => false));
                 echo '</div>';
             }
         }
@@ -746,7 +711,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         break;
 
     case 'student':
-        DrawBC($welcome . ' | '._role.' : '._student.'');
+        DrawBC($welcome . ' | Role : Student');
 
         $notes_RET = DBGet(DBQuery('SELECT IF(pn.school_id IS NULL,\'All School\',(SELECT TITLE FROM schools WHERE id=pn.school_id)) AS SCHOOL,pn.LAST_UPDATED,pn.TITLE,pn.CONTENT 
             FROM portal_notes pn
@@ -759,10 +724,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         if (count($notes_RET)) {
             echo '<div class="panel panel-default">';
 
-            ListOutput($notes_RET, array('LAST_UPDATED' => _datePosted,
-             'TITLE' => _title,
-             'CONTENT' => _note,
-            ), _note, _notes, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($notes_RET, array('LAST_UPDATED' => 'Date Posted', 'TITLE' => 'Title', 'CONTENT' => 'Note'), 'Note', 'Notes', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
 
@@ -780,10 +742,7 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
         }
         if (count($events_RET)) {
             echo '<div class="panel panel-default">';
-            ListOutput($events_RET, array('TITLE' => _event,
-             'SCHOOL_DATE' => _date,
-             'DESCRIPTION' => _description,
-            ), _upcomingEvent, _upcomingEvents, array(), array(), array('save' =>false, 'search' =>false));
+            ListOutput($events_RET, array('TITLE' => 'Event', 'SCHOOL_DATE' => 'Date', 'DESCRIPTION' => 'Description'), 'Upcoming Event', 'Upcoming Events', array(), array(), array('save' => false, 'search' => false));
             echo '</div>';
         }
 
@@ -839,23 +798,18 @@ $update_notify_s = DBGet(DBQuery('SELECT VALUE FROM program_config WHERE school_
             if (count($assignments_RET)) {
 
                 echo '<div class="panel panel-default">';
-                $LO_columns = array('TITLE' =>_title,
-                 'CATEGORY' =>_category,
-                 'ASSIGNED_DATE' =>_assignedDate,
-                 'DUE_DATE' =>_dueDate,
-                 'COMMENT' =>_description,
-                );
+                $LO_columns = array('TITLE' => 'Title', 'CATEGORY' => 'Category', 'ASSIGNED_DATE' => 'Assigned Date', 'DUE_DATE' => 'Due Date', 'COMMENT' => 'Description');
 
                 $LO_ret = array(0 => array());
 
                 foreach ($assignments_RET as $assignment) {
                     $LO_ret[] = array('TITLE' => $assignment['TITLE'], 'CATEGORY' => $assignment['CATEGORY'], 'ASSIGNED_DATE' => $assignment['ASSIGNED_DATE'], 'DUE_DATE' => $assignment['DUE_DATE'], 'COMMENT' => html_entity_decode(html_entity_decode($assignment['COMMENT'])));
                 }
-                DrawHeader(''._subject.' - ' . substr($course['TITLE'], strrpos(str_replace(' - ', ' ^ ', $course['TITLE']), '^')));
+                DrawHeader('Subject - ' . substr($course['TITLE'], strrpos(str_replace(' - ', ' ^ ', $course['TITLE']), '^')));
 
                 unset($LO_ret[0]);
 
-                ListOutput($LO_ret, $LO_columns,  _assignment, _assignments, array(), array(), array('center' =>false, 'save' => $_REQUEST['id'] != 'all', 'search' =>false));
+                ListOutput($LO_ret, $LO_columns, 'Assignment', 'Assignments', array(), array(), array('center' => false, 'save' => $_REQUEST['id'] != 'all', 'search' => false));
                 echo '</div>';
             }
         }

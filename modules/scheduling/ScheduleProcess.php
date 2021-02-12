@@ -27,6 +27,8 @@
 #***************************************************************************************
 include('../../RedirectRootInc.php');
 include('../../Warehouse.php');
+include('../../modules/actionframework/ActionFramework.php');
+
 DBQuery("CREATE TABLE IF NOT EXISTS temp_schedule AS SELECT * FROM schedule WHERE 0");
 $course_period_id=$_REQUEST['cp_id'];
 $insert=$_REQUEST['insert'];

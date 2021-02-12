@@ -1,15 +1,6 @@
-function Validator(frmname, submit_id = false)
+function Validator(frmname)
 {
     this.formobj = document.forms[frmname];
-
-    var submitBtnObj = window.$("input[type=submit]",this);
-    // console.log(submitBtn);
-
-    if(submit_id != '')
-    {
-        window.submitBtn = submit_id;
-    }
-
     if (!this.formobj)
     {
         alert("BUG: couldnot get Form object " + frmname);
@@ -91,20 +82,8 @@ function vdesc_validate()
     if (!V2validateData(this.desc, this.itemobj, this.error))
     {
         this.itemobj.focus();
-
-        if(typeof submitBtn !== 'undefined' && submitBtn != '')
-        {
-            document.getElementById(submitBtn).disabled = false;
-        }
-
         return false;
     }
-
-    if(typeof submitBtn !== 'undefined' && submitBtn != '')
-    {
-        document.getElementById(submitBtn).disabled =  true;
-    }
-    
     return true;
 }
 function ValidationSet(inputitem)
@@ -209,21 +188,6 @@ function V2validateData(strValidateStr, objValue, strError)
     strError = unescape(strError);
     switch (command)
     {
-        case "reqmod":
-        case "requiredmod":
-        {
-            objValue.value = objValue.value.trim();
-            if (eval(objValue.value.length) == 0)
-            {
-                if (!strError || strError.length == 0)
-                {
-                    strError = objValue.name + " : Required Field";
-                }
-                $('#' + alertDiv).html('<div class="alert alert-danger no-border"><i class="fa fa-info-circle"></i> ' + strError + '</div>');
-                return false;
-            }
-            break;
-        }
         case "req":
         case "required":
         {

@@ -180,7 +180,7 @@ foreach ($column_name as $value) {
 	function goToPage(delta){
 		var count = obj.getProperty(\"row/pageCount\");
 		var number = obj.getProperty(\"row/pageNumber\");
-		number += _delta;
+		number += delta;
 		if (number < 0) {number = 0}
 		if (number > count-1) {number = count-1}
 		document.getElementById('pageLabel').innerHTML = \"Page \" + (number + 1) + \" of \" + count + \" (Total No of Records: ".$row_count.") \";
@@ -208,17 +208,12 @@ function activewidgets_html($msg){
 }
 
 function listuser($sql, $filename){
-	$columns=array(_staff, _profile, staffId, lastLogin);
+	$columns=array('Staff', 'Profile', 'Staff ID', 'Last Login');
 	echo "<div style='position: relative; width: 788px; height: 300px; z-index: 1; border: 1px solid #ADBCC9' id='divUsers'>".listuser_grid("obj", $columns, getUserData($sql), $filename, "staff_id")."</div>";
 }
 
 function listStudents($sql, $filename){
-	$columns=array(
-	 _student,
-	 _grade,
-	 _studentId,
-	 _school,
-	);
+	$columns=array('Student', 'Grade', 'Student ID', 'School');
 	echo "<div style='position: relative; width: 788px; height: 300px; z-index: 1; border: 1px solid #ADBCC9' id='divStudents'>".listuser_grid("obj", $columns, getUserData($sql), $filename, "student_id")."</div>";
 }
 

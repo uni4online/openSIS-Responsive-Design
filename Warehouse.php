@@ -30,6 +30,12 @@ if (WAREHOUSE_PHP == 0) {
     define("WAREHOUSE_PHP", 1);
     $staticpath = dirname(__FILE__) . '/';
 
+    if(!defined("UNI4_ENVIRONMENT"))
+        define("UNI4_ENVIRONMENT", "TST");
+
+    if(!defined("UNI4_SCHOOL_TYPE"))
+        define("UNI4_SCHOOL_TYPE", "SLP");
+
     require_once($staticpath . "ConfigInc.php");
     require_once("DatabaseInc.php");
 
@@ -51,6 +57,9 @@ if (WAREHOUSE_PHP == 0) {
             }
         }
     }
+
+    // include third party libraries
+    require_once($staticpath . "vendor/autoload.php");
 
     // Start Session.
     session_start();

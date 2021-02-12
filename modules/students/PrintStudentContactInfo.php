@@ -26,10 +26,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
-{
-    $_REQUEST['search_modfunc'] = 'list';
-}
 if($_REQUEST['modfunc']=='save')
 {
 	if(count($_REQUEST['st_arr']))
@@ -48,46 +44,31 @@ if($_REQUEST['modfunc']=='save')
   
 	if(count($RET))
 	{
-						$column_name=array('STUDENT_ID'=>_studentId,
-						'ALT_ID'=>_studentId,
-						'FULL_NAME'=>_student,
-						'CONTACT_TYPE'=>_type,
-						'RELATION'=>_relation,
-						'RELATION_NAME'=>_relationSName,
-						'STREET'=>_street,
-						'ADDRESS'=>_address,
-						'CITY'=>_city,
-						'STATE'=>_state,
-						'ZIP'=>_zip,
-						'WORK_PHONE'=>_workPhone,
-						'HOME_PHONE'=>_homePhone,
-						'CELL_PHONE'=>_cellPhone,
-						'EMAIL_ID'=>_emailAddress,
-					);
-                        $singular=_studentContact;
-                        $plural=_studentContacts;
-                        $options=array('search' =>false);
+                        $column_name=array('STUDENT_ID'=>'Student ID','ALT_ID'=>'Alternate ID','FULL_NAME'=>'Student','CONTACT_TYPE'=>'Type','RELATION'=>'Relation','RELATION_NAME'=>'Relation\'s Name','STREET'=>'Street','ADDRESS'=>'Address','CITY'=>'City','STATE'=>'State','ZIP'=>'Zip','WORK_PHONE'=>'Work Phone','HOME_PHONE'=>'Home Phone','CELL_PHONE'=>'Cell Phone','EMAIL_ID'=>'Email Address');
+                        $singular='Student Contact';
+                        $plural='Student Contacts';
+                        $options=array('search' => false);
 
                         ListOutputPrint($RET, $column_name,$singular,$plural,$link=false,$group=false,$options);
 
 	}
 	else{
-		ShowErrPhp(_noContactsWereFound);
+		ShowErrPhp('No Contacts were found.');
                                     for_error();
                         }
 	}
 	else{
-		ShowErrPhp(_youMustChooseAtLeastOneStudent);
+		ShowErrPhp('You must choose at least one student.');
                                     for_error();
                         }
-	// unset($_SESSION['student_id']);
+	unset($_SESSION['student_id']);
 	
-	$_REQUEST['modfunc']= true;
+	$_REQUEST['modfunc']=true;
 }
 
 if(!$_REQUEST['modfunc'])
 {
-	DrawBC(""._students." > ".ProgramTitle());
+	DrawBC("Students > ".ProgramTitle());
 
 	if($_REQUEST['search_modfunc']=='list')
 	{
@@ -98,10 +79,6 @@ if(!$_REQUEST['modfunc'])
 
 	$extra['link'] = array('FULL_NAME'=>false);
 	$extra['SELECT'] = ',s.STUDENT_ID AS CHECKBOX';
-	if(isset($_SESSION['student_id']) && $_SESSION['student_id'] != '')
-    {
-        $extra['WHERE'] .= ' AND s.STUDENT_ID=' . $_SESSION['student_id'];
-    }
 	$extra['functions'] = array('CHECKBOX'=>'_makeChooseCheckbox');
 	$extra['columns_before'] = array('CHECKBOX'=>'</A><INPUT type=checkbox value=Y name=controller onclick="checkAllDtMod(this,\'st_arr\');"><A>');
 	$extra['options']['search'] = false;
@@ -112,7 +89,7 @@ if(!$_REQUEST['modfunc'])
 	Search('student_id',$extra);
 	if($_REQUEST['search_modfunc']=='list')
 	{
-		echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value=\''._printContactInfoForSelectedStudents.'\'></div>';
+		echo '<div class="text-right p-r-20 p-b-20"><INPUT type=submit class="btn btn-primary" value=\'Print Contact Info for Selected Students\'></div>';
 		echo "</FORM>";
 	}
 }

@@ -37,7 +37,7 @@ if($url===FALSE){
  header('Location: index.php');
  }
 
-echo "<HTML><HEAD><TITLE>"._openSisSchoolSoftware."</TITLE>
+echo "<HTML><HEAD><TITLE>openSIS School Software</TITLE>
 <script language=javascript>
 function resizeImages()
 {
@@ -57,7 +57,7 @@ function resizeImages()
 			document.images[i].width = Math.round(document.images[i].width * ratio);
 	}
 	
-	old_width = _width;
+	old_width = width;
 	return true;
 }
 

@@ -27,8 +27,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-include('lang/language.php');
-
 if ($_REQUEST['modfunc'] == 'save') {
     if (UserStudentID()) {
         $extra['WHERE'] = ' AND s.STUDENT_ID =\'' . UserStudentID() . '\'';
@@ -97,7 +95,7 @@ if ($_REQUEST['modfunc'] == 'save') {
 
                 echo '<tr><td>Student ID:</td>';
                 echo '<td>' . $courses[1]['STUDENT_ID'] . '</td></tr>';
-                echo '<tr><td>'._studentName.':</td>';
+                echo '<tr><td>Student Name:</td>';
                 echo '<td><b>' . $courses[1]['FULL_NAME'] . '</b></td></tr>';
                 echo '<tr><td>' . $courses[1]['GRD_LVL'] . '</td>';
                 echo '<td>' . $st_data[1]['CUSTOM_10'] . '</td></tr>';
@@ -205,7 +203,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                     }
                     echo "</table>";
                 } else {
-                    echo _noScheduleFound;
+                    echo 'No Schedule Found';
                 }
 
 
@@ -217,12 +215,12 @@ if ($_REQUEST['modfunc'] == 'save') {
             }
             PDFStop($handle);
         } else
-            BackPrompt(''._noRecordsWereFound.'.');
+            BackPrompt('No Records were found.');
     }
 }
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC(""._scheduling." > " . ProgramTitle());
+    DrawBC("Scheduling > " . ProgramTitle());
     echo "<FORM name=schs id=schs action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname]))."  method=POST >";
     echo '<div class="panel">';
     
@@ -231,7 +229,7 @@ if (!$_REQUEST['modfunc']) {
     $link = 'Modules.php?modname=' . strip_tags(trim($_REQUEST[modname])) . '&sel_mp=';
     
     echo '<div class="panel-heading">';
-    echo '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">'._pleaseSelectTheMarkingPeriod.' :</span>';
+    echo '<div class="form-inline"><div class="input-group"><span class="input-group-addon" id="sizing-addon1">Please select the Marking Period :</span>';
     echo "<SELECT name=sel_mp id=sel_mp class=form-control onChange=\"window.location='".$link."' + this.options[this.selectedIndex].value;\">";
     if (count($RET1)) {
         if ($_REQUEST['sel_mp'])
@@ -391,7 +389,7 @@ if (!$_REQUEST['modfunc']) {
                 echo "</table>";
                 echo "</div>"; //.table-responsive
             } else {
-                $error = _noScheduleFound;
+                $error = 'No Schedule Found';
             }
         }
 
@@ -400,13 +398,13 @@ if (!$_REQUEST['modfunc']) {
             echo $error;
         }
     } else {
-        BackPrompt(_noStudentsWereFound.'.');
+        BackPrompt('No Students were found.');
     }
 #############################################################################################
     echo "</FORM>";
     $footer_options  = "<FORM name=sch class=\"no-padding no-margin\" id=sch action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname]). "&modfunc=save&include_inactive=$_REQUEST[include_inactive]&_openSIS_PDF=true") . " method=POST target=_blank>";
     $footer_options .= "<input type=hidden name=sel_mp value=$sel_mp>";
-    $footer_options .= '<button type=submit class="btn btn-success btn-labeled pull-right" value="Print"><b><i class="icon-printer4"></i></b>'._print.'</button>';
+    $footer_options .= '<button type=submit class="btn btn-success btn-labeled pull-right" value="Print"><b><i class="icon-printer4"></i></b>Print</button>';
     $footer_options .= "</FORM>";
     //PopTable('footer',$footer_options);
     echo '</div>'; //.panel-body

@@ -58,14 +58,7 @@ function GetStuList(& $extra) {
         $view_other_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE PROGRAM=\'StudentFieldsView\' AND TITLE IN (\'PHONE\',\'HOME_PHONE\',\'GUARDIANS\',\'ALL_CONTACTS\') AND USER_ID=\'' . User('STAFF_ID') . '\''), array(), array('TITLE'));
 
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
-            $extra['columns_after'] = array('PHONE' =>_phone,
-             'GENDER' =>_gender,
-             'ETHNICITY' =>_ethnicity,
-             'ADDRESS' =>_mailingAddress,
-             'CITY' =>_city,
-             'STATE' =>_state,
-             'ZIPCODE' =>_zipcode,
-            ) + $extra['columns_after'];
+            $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
             $select = ',s.PHONE,s.GENDER,s.ETHNICITY_ID,COALESCE((SELECT STREET_ADDRESS_1 FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STREET_ADDRESS_1) AS ADDRESS,COALESCE((SELECT CITY FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.CITY) AS CITY,COALESCE((SELECT STATE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.STATE) AS STATE,COALESCE((SELECT ZIPCODE FROM student_address WHERE student_id=ssm.STUDENT_ID AND TYPE="Mail"),sa.ZIPCODE) AS ZIPCODE ';
 
@@ -261,17 +254,7 @@ switch (User('PROFILE')) {
             if(stripos($extra['FROM'], "student_enrollment ssm") === false)
                 $sql .=',student_enrollment ssm ';
             if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
-            {
-                // DDDDD
-                if(isset($_SESSION['student_id']) && $_REQUEST['modfunc'] == 'save')
-                {
-                    $sql .= $extra['FROM']. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';
-                }
-                else
-                {
-                    $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';
-                }
-            }
+                $sql .=$extra['FROM'] .',schedule sr '. ' WHERE sr.STUDENT_ID=ssm.STUDENT_ID AND s.student_id=ssm.student_id';          
             else
             $sql.=$extra['FROM'] . ' WHERE ssm.STUDENT_ID=s.STUDENT_ID  ';
 //            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
@@ -284,10 +267,8 @@ switch (User('PROFILE')) {
                 $sql .= ' AND ssm.ID=(SELECT ID FROM student_enrollment WHERE STUDENT_ID=ssm.STUDENT_ID AND SYEAR =\'' . UserSyear() . '\' ORDER BY START_DATE DESC LIMIT 1)';
                 }
                 if (!$_REQUEST['include_inactive'])
-                {
                     //$sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND ((ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL) AND \'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'>=ssm.START_DATE) OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
-                    $sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)  OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
-                }
+                $sql .= $_SESSION['inactive_stu_filter'] = ' AND ssm.SYEAR=\'' . UserSyear() . '\' AND (ssm.START_DATE IS NOT NULL AND (\'' . date('Y-m-d', strtotime($extra['DATE'])) . '\'<=ssm.END_DATE OR ssm.END_DATE IS NULL)  OR ssm.DROP_CODE=' . $get_rollover_id . ' ) ';
                 if ($_REQUEST['address_group'])
                     $extra['columns_after']['CHILD'] = 'Parent';
                 if (UserSchool() && $_REQUEST['_search_all_schools'] != 'Y')
@@ -310,11 +291,8 @@ switch (User('PROFILE')) {
                     $sql .= ' AND ssm.SCHOOL_ID=\'' . UserSchool() . '\'';
                 }
             }
-            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list' && $_REQUEST['modfunc'] != 'save')
-           {
-                $extra['GROUP']='s.STUDENT_ID';
-           }
-           
+            if($_REQUEST['modname'] =='scheduling/PrintSchedules.php' && $_REQUEST['search_modfunc'] =='list')
+            $extra['GROUP']='s.STUDENT_ID';
             break;
 
         case 'teacher':
@@ -606,7 +584,7 @@ else
     if ($extra['DEBUG'] === true)
         echo '<!--' . $sql . '-->';
     
-    //    echo "<br><br>".$sql;
+//        echo "<br><br>".$sql;
     $return = DBGet(DBQuery($sql), $functions, $extra['group']);
     $_SESSION['count_stu'] = count($return);
     if ($_REQUEST['modname'] == 'students/Student.php' && $_REQUEST['search_modfunc'] == 'list')
@@ -1045,14 +1023,7 @@ function GetStuList_Absence_Summary(& $extra) {
         $view_other_RET = DBGet(DBQuery('SELECT TITLE,VALUE FROM program_user_config WHERE PROGRAM=\'StudentFieldsView\' AND TITLE IN (\'PHONE\',\'HOME_PHONE\',\'GUARDIANS\',\'ALL_CONTACTS\') AND USER_ID=\'' . User('STAFF_ID') . '\''), array(), array('TITLE'));
 
         if (!count($view_fields_RET) && !isset($view_address_RET) && !isset($view_other_RET['CONTACT_INFO'])) {
-            $extra['columns_after'] = array('PHONE' =>_phone,
-             'GENDER' =>_gender,
-             'ETHNICITY' =>_ethnicity,
-             'ADDRESS' =>_mailingAddress,
-             'CITY' =>_city,
-             'STATE' =>_state,
-             'ZIPCODE' =>_zipcode,
-            ) + $extra['columns_after'];
+            $extra['columns_after'] = array('PHONE' => 'Phone', 'GENDER' => 'Gender', 'ETHNICITY' => 'Ethnicity', 'ADDRESS' => 'Mailing Address', 'CITY' => 'City', 'STATE' => 'State', 'ZIPCODE' => 'Zipcode') + $extra['columns_after'];
 
 
             $select = ',s.PHONE,s.GENDER,s.ETHNICITY_ID,a.STREET_ADDRESS_1 as ADDRESS,a.CITY,a.STATE,a.ZIPCODE ';

@@ -27,8 +27,6 @@
 #
 #***************************************************************************************
 include('../../RedirectModulesInc.php');
-include('lang/language.php');
-
 if ($_REQUEST['modfunc'] == 'save') {
     if (count($_REQUEST['cp_arr'])) {
         $cp_list = '\'' . implode('\',\'', $_REQUEST['cp_arr']) . '\'';
@@ -52,7 +50,7 @@ if ($_REQUEST['modfunc'] == 'save') {
                 $RET = GetStuList($extra);
                 if (count($RET)) {
                     echo "<table width=100%  style=\" font-family:Arial; font-size:12px;\" >";
-                    echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">"._studentClassPictures."</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />"._poweredByOpenSis." </td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
+                    echo "<tr><td width=105>" . DrawLogo() . "</td><td  style=\"font-size:15px; font-weight:bold; padding-top:20px;\">" . GetSchool(UserSchool()) . "<div style=\"font-size:12px;\">Student Class Pictures</div></td><td align=right style=\"padding-top:20px;\">" . ProperDate(DBDate()) . "<br />Powered by openSIS</td></tr><tr><td colspan=3 style=\"border-top:1px solid #333;\">&nbsp;</td></tr></table>";
                     echo '<TABLE border=0 style=border-collapse:collapse>';
                     echo '<TR><TD colspan=5 align=center  style=font-size:15px; font-weight:bold;>' . UserSyear() . '-' . (UserSyear() + 1) . ' - ' . $course_period['TITLE'] . '</TD></TR>';
                     $i = 0;
@@ -127,7 +125,7 @@ if ($_REQUEST['modfunc'] == 'save') {
         $_SESSION['UserCoursePeriod'] = $PCP_UserCoursePeriod;
         PDFStop($handle);
     } else
-        BackPrompt(_youMustChooseAtLeastOneCoursePeriod.'.');
+        BackPrompt('You must choose at least one course period.');
 }
 
 if($_REQUEST['modfunc'] != 'save')
@@ -141,7 +139,7 @@ echo '<div class="modal-content">';
 
 echo '<div class="modal-header">';
 echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-echo '<h5 class="modal-title">'._chooseCourse.'</h5>';
+echo '<h5 class="modal-title">Choose course</h5>';
 echo '</div>'; //.modal-header
 
 echo '<div class="modal-body">';
@@ -152,9 +150,9 @@ $sql = "SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID='" . UserSc
 $QI = DBQuery($sql);
 $subjects_RET = DBGet($QI);
 
-echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' '._subjectWas.'' : ' '._subjectWas.'') . ' '._subjectWas.'.</h6>';
+echo '<h6>'.count($subjects_RET) . ((count($subjects_RET) == 1) ? ' Subject was' : ' Subjects were') . ' found.</h6>';
 if (count($subjects_RET) > 0) {
-    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>'._subject.'</th></tr></thead>';
+    echo '<table class="table table-bordered"><thead><tr class="alpha-grey"><th>Subject</th></tr></thead>';
     echo '<tbody>';
     foreach ($subjects_RET as $val) {
         echo '<tr><td><a href=javascript:void(0); onclick="MassDropModal(' . $val['SUBJECT_ID'] . ',\'courses\')">' . $val['TITLE'] . '</a></td></tr>';
@@ -175,7 +173,7 @@ echo '</div>'; //.modal
 
 
 if (!$_REQUEST['modfunc']) {
-    DrawBC(""._scheduling." > " . ProgramTitle());
+    DrawBC("Scheduling > " . ProgramTitle());
 
     if (User('PROFILE') != 'admin')
         $_REQUEST['search_modfunc'] = 'list';
@@ -185,18 +183,18 @@ if (!$_REQUEST['modfunc']) {
         echo "<FORM name=inc id=inc action=ForExport.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=save&_openSIS_PDF=true method=POST target=_blank>";
         echo '<div class="panel panel-default">';
 
-        $extra['extra_header_left'] = '<label class="checkbox-inline"><INPUT type=checkbox name=include_teacher value=Y checked>'._includeTeacher.'</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=legal_size value=Y>'._legalSizePaper.'</label>';
-        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=last_year value=Y>'._useLastYearsIfMissing.'</label>';
+        $extra['extra_header_left'] = '<label class="checkbox-inline"><INPUT type=checkbox name=include_teacher value=Y checked>Include Teacher</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=legal_size value=Y>Legal Size Paper</label>';
+        $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=last_year value=Y>Use Last Year\'s if Missing</label>';
         if (User('PROFILE') == 'admin' || User('PROFILE') == 'teacher')
-            $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=include_inactive value=Y>'._includeInactiveStudents.'</label>';
+            $extra['extra_header_left'] .= '<label class="checkbox-inline"><INPUT type=checkbox name=include_inactive value=Y>Include Inactive Students</label>';
     }
 
     mySearch('course_period', $extra);
     if ($_REQUEST['search_modfunc'] == 'list') {
 
         if ($_SESSION['count_course_periods'] != 0)
-            echo '<div class="panel-footer"><div class="heading-elements text-right p-r-20"><INPUT type=submit class="btn btn-primary" value=\''._printClassPicturesForSelectedCoursePeriods.'\'></div></div>';
+            echo '<div class="panel-footer"><div class="heading-elements text-right p-r-20"><INPUT type=submit class="btn btn-primary" value=\'Create Class Pictures for Selected Course Periods\'></div></div>';
 
         echo '</div>';
         echo '</FORM>';
@@ -210,13 +208,13 @@ function mySearch($type, $extra = '') {
 
         echo "<FORM class=\"form-horizontal\" action=Modules.php?modname=" . strip_tags(trim($_REQUEST[modname])) . "&modfunc=" . strip_tags(trim($_REQUEST[modfunc])) . "&search_modfunc=list&next_modname=" . strip_tags(trim($_REQUEST[next_modname])) . " method=POST>";
 
-        PopTable('header', _search);
+        PopTable('header', 'Search');
 
         $RET = DBGet(DBQuery('SELECT s.STAFF_ID,CONCAT(s.LAST_NAME,\'' . ',' . '\',s.FIRST_NAME) AS FULL_NAME FROM staff s,staff_school_relationship ssr WHERE s.STAFF_ID=ssr.STAFF_ID AND s.PROFILE=\'' . 'teacher' . '\' AND position(\'' . UserSchool() . '\' IN ssr.SCHOOL_ID)>0 AND ssr.SYEAR=\'' . UserSyear() . '\' ORDER BY FULL_NAME'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._teacher.'</label><div class="col-lg-8">';
-        echo "<SELECT name=teacher_id class=form-control><OPTION value=''>"._NA."</OPTION>";
+        echo '<div class="form-group"><label class="control-label col-lg-4">Teacher</label><div class="col-lg-8">';
+        echo "<SELECT name=teacher_id class=form-control><OPTION value=''>N/A</OPTION>";
         foreach ($RET as $teacher)
             echo "<OPTION value=$teacher[STAFF_ID]>$teacher[FULL_NAME]</OPTION>";
         echo '</SELECT></div></div>';
@@ -224,8 +222,8 @@ function mySearch($type, $extra = '') {
 
         $RET = DBGet(DBQuery('SELECT SUBJECT_ID,TITLE FROM course_subjects WHERE SCHOOL_ID=\'' . UserSchool() . '\' AND SYEAR=\'' . UserSyear() . '\' ORDER BY TITLE'));
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._subject.'</label><div class="col-lg-8">';
-        echo "<SELECT name=subject_id class=\"form-control\"><OPTION value=''>"._NA."</OPTION>";
+        echo '<div class="form-group"><label class="control-label col-lg-4">Subject</label><div class="col-lg-8">';
+        echo "<SELECT name=subject_id class=\"form-control\"><OPTION value=''>N/A</OPTION>";
         foreach ($RET as $subject)
             echo "<OPTION value=$subject[SUBJECT_ID]>$subject[TITLE]</OPTION>";
         echo '</SELECT></div></div>';
@@ -235,8 +233,8 @@ function mySearch($type, $extra = '') {
         $RET = DBGet(DBQuery('SELECT PERIOD_ID,TITLE FROM school_periods WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\' ORDER BY SORT_ORDER'));
         echo '<div class="row">';
         echo '<div class="col-lg-6">';
-        echo '<div class="form-group"><label class="control-label col-lg-4">'._period.'</label><div class="col-lg-8">';
-        echo "<SELECT name=period_id class=\"form-control\"><OPTION value=''>"._NA."</OPTION>";
+        echo '<div class="form-group"><label class="control-label col-lg-4">Period</label><div class="col-lg-8">';
+        echo "<SELECT name=period_id class=\"form-control\"><OPTION value=''>N/A</OPTION>";
         foreach ($RET as $period)
             echo "<OPTION value=$period[PERIOD_ID]>$period[TITLE]</OPTION>";
         echo '</SELECT></div></div>';
@@ -250,7 +248,7 @@ function mySearch($type, $extra = '') {
 
 
         echo '<div>';
-        echo Buttons(_submit, _reset, 'onclick="self_disable(this);"');
+        echo Buttons('Submit', 'Reset');
         echo '</div>';
         PopTable('footer');
 
@@ -287,8 +285,8 @@ function mySearch($type, $extra = '') {
 
         $course_periods_RET = DBGet(DBQuery($sql), array('COURSE_PERIOD_ID' => '_makeChooseCheckbox'));
         $_SESSION['count_course_periods'] = count($course_periods_RET);
-        $LO_columns = array('COURSE_PERIOD_ID' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'cp_arr\');"><A>', 'TITLE' =>_coursePeriod);
-        ListOutput($course_periods_RET, $LO_columns, _coursePeriod, _coursePeriods);
+        $LO_columns = array('COURSE_PERIOD_ID' => '</A><INPUT type=checkbox value=Y name=controller onclick="checkAll(this.form,this.form.controller.checked,\'cp_arr\');"><A>', 'TITLE' => 'Course Period');
+        ListOutput($course_periods_RET, $LO_columns, 'Course Period', 'Course Periods');
     }
 }
 

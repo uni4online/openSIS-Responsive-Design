@@ -99,7 +99,7 @@ if ($_REQUEST['month_date'] && $_REQUEST['day_date'] && $_REQUEST['year_date']) 
         $_REQUEST['year_date'] = $temp_arr[2];
     }
 }
-DrawBC(""._attendance." > " . ProgramTitle());
+DrawBC("Attendance > " . ProgramTitle());
 if (!isset($_REQUEST['table'])) {
     $_REQUEST['table'] = '0';
 }
@@ -199,18 +199,6 @@ $current_Q = 'SELECT ATTENDANCE_TEACHER_CODE,STUDENT_ID,ADMIN,COMMENT FROM ' . $
 $current_RET = DBGet(DBQuery($current_Q), array(), array('STUDENT_ID'));
 
 if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
-
-    $already_attn_flag = 0;
-    
-    $attendanceAlreadyTaken = count(DBGet(DBQuery("SELECT * FROM attendance_period WHERE STUDENT_ID in (".implode(', ',array_keys($_REQUEST['attendance'])).") AND SCHOOL_DATE = '$date' AND PERIOD_ID='".UserPeriod()."'"))) > 0 ? true : false;
-       $attendanceAlreadyTakenTwo = DBGet(DBQuery('SELECT * FROM `attendance_completed` WHERE SCHOOL_DATE = \''.$date.'\' AND PERIOD_ID=\''.UserPeriod().'\' AND STAFF_ID = \''.User('STAFF_ID').'\''));
-    if($attendanceAlreadyTaken && count($attendanceAlreadyTakenTwo) == 0) {
-        // print_r(ErrorMessage(array('Attendance is already taken for the students on selected day and period.'), 'note'));
-        // die;
-        $already_attn_flag++;
-    }
-    if($already_attn_flag == 0)
-    {
     foreach ($_REQUEST['attendance'] as $student_id => $value) {
         if (stripos($_SERVER['SERVER_SOFTWARE'], 'linux')) {
             if (isset($_REQUEST['comment'][$student_id])) {
@@ -259,11 +247,6 @@ if ($_REQUEST['attendance'] && ($_POST['attendance'] || $_REQUEST['ajax'])) {
     $current_RET = DBGet(DBQuery($current_Q), array(), array('STUDENT_ID'));
     unset($_SESSION['_REQUEST_vars']['attendance']);
 }
-   else
-    {
-        echo '<div class="alert alert-danger alert-styled-left m-b-0">'._attendanceIsAlreadyTakenForTheStudentsOnSelectedDayAndPeriod.'</div>';
-    }
-}
 
 
 if ($_SESSION['PROFILE'] == 'teacher')
@@ -282,7 +265,7 @@ if (count($codes_RET)) {
 } else
     $columns = array();
 $extra['SELECT'] .= ',s.STUDENT_ID AS COMMENT';
-$columns += array('COMMENT' => _comment);
+$columns += array('COMMENT' => 'Comment');
 if (!is_array($extra['functions']))
     $extra['functions'] = array();
 $extra['functions'] += array('FULL_NAME' => '_makeTipMessage', 'COMMENT' => 'makeCommentInput');
@@ -332,7 +315,7 @@ else
     unset($_REQUEST['username']);
     $stu_RET = GetStuListAttn($extra);
 }
-$date_note = $date != date('Y-m-d') ? ' <span class="text-danger m-l-10"><i class="icon-info22"></i> '._theSelectedDateIsNotToday.'</span>' : '';
+$date_note = $date != date('Y-m-d') ? ' <span class="text-danger m-l-10"><i class="icon-info22"></i> The selected date is not today</span>' : '';
 
 
 # commented as requested
@@ -342,17 +325,17 @@ if ($_REQUEST['table'] == '0') {
     $completed_RET = DBGet(DBQuery('SELECT \'Y\' as COMPLETED,STAFF_ID,SUBSTITUTE_STAFF_ID,IS_TAKEN_BY_SUBSTITUTE_STAFF FROM attendance_completed WHERE (STAFF_ID=\'' . User('STAFF_ID') . '\' OR SUBSTITUTE_STAFF_ID=\'' . User('STAFF_ID') . '\') AND SCHOOL_DATE=\'' . $date . '\' AND PERIOD_ID=\'' . UserPeriod() . '\' AND CPV_ID=\'' . CpvId() . '\''));
     if ($completed_RET) {
         if ($completed_RET[1]['IS_TAKEN_BY_SUBSTITUTE_STAFF'] != 'Y' && User('STAFF_ID') == $completed_RET[1]['SUBSTITUTE_STAFF_ID'])
-            $note = ErrorMessage(array('<IMG SRC=assets/check.gif>'._primaryTeacherHasTakenAttendanceTodayForThisPeriod.'.'), 'note');
+            $note = ErrorMessage(array('<IMG SRC=assets/check.gif>Primary teacher has taken attendance today for this period.'), 'note');
         elseif ($completed_RET[1]['IS_TAKEN_BY_SUBSTITUTE_STAFF'] == 'Y' && User('STAFF_ID') == $completed_RET[1]['STAFF_ID'])
-            $note = ErrorMessage(array('<i class="icon-checkmark4"></i> '._secondaryTeacherHasTakenAttendanceTodayForThisPeriod.'.'), 'note');
+            $note = ErrorMessage(array('<i class="icon-checkmark4"></i> Secondary teacher has taken attendance today for this period.'), 'note');
         else
-            $note = ErrorMessage(array('<i class="icon-checkmark4"></i> '._youHaveTakenAttendanceTodayForThisPeriod.'.'), 'note', 'style="margin-bottom: 0;"');
+            $note = ErrorMessage(array('<i class="icon-checkmark4"></i> You have taken attendance today for this period.'), 'note', 'style="margin-bottom: 0;"');
     }
 
     if ($_SESSION['miss_attn'] == 1) {
         $get_profile_type = DBGet(DBQuery('SELECT PROFILE FROM user_profiles WHERE ID=' . UserProfileID()));
         if (($_REQUEST['username'] == 'admin' || $get_profile_type[1]['PROFILE'] == 'admin'))  //&& $_REQUEST['modfunc']=='attn'
-            $note1 = '<a href=Modules.php?modname=users/TeacherPrograms.php?include=attendance/MissingAttendance.php&From=' . $From . '&to=' . $to . ' class="text-primary"><i class="icon-square-left"></i> '._backToMissingAttendanceList.' </a>';
+            $note1 = '<a href=Modules.php?modname=users/TeacherPrograms.php?include=attendance/MissingAttendance.php&From=' . $From . '&to=' . $to . ' class="text-primary"><i class="icon-square-left"></i> Back to Missing Attendance List </a>';
     }
 }
 
@@ -375,7 +358,7 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
     if (isset($_REQUEST['cp_id_miss_attn'])) {
         $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . $_REQUEST['cp_id_miss_attn'] . ' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') ORDER BY sp.SORT_ORDER ');
         $RET = DBGet($QI);
-        $period_select = '<label class="control-label">'._choosePeriod.':</label>
+        $period_select = '<label class="control-label">Choose Period:</label>
         <SELECT class="form-control" name=period onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&period=\'+this.options[selectedIndex].value">';
         $period_select .= "<OPTION value='' selected>N/A</OPTION>";
         $fi = array();
@@ -395,7 +378,7 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
         $QI = DBQuery('SELECT DISTINCT cpv.ID,cpv.PERIOD_ID,cp.COURSE_PERIOD_ID,sp.TITLE,sp.SHORT_NAME,cp.MARKING_PERIOD_ID,cpv.DAYS,sp.SORT_ORDER,c.TITLE AS COURSE_TITLE FROM course_periods cp,course_period_var cpv, school_periods sp,courses c WHERE c.COURSE_ID=cp.COURSE_ID AND cpv.PERIOD_ID=sp.PERIOD_ID AND cp.COURSE_PERIOD_ID=cpv.COURSE_PERIOD_ID AND cpv.COURSE_PERIOD_ID=' . UserCoursePeriod() . ' AND cp.SYEAR=\'' . UserSyear() . '\' AND cp.SCHOOL_ID=\'' . UserSchool() . '\' AND (cp.TEACHER_ID=\'' . User('STAFF_ID') . '\' OR cp.SECONDARY_TEACHER_ID=\'' . User('STAFF_ID') . '\') ORDER BY sp.SORT_ORDER ');
         $RET = DBGet($QI);
 
-        $period_select = '<label class="control-label">'._choosePeriod.':</label> 
+        $period_select = '<label class="control-label">Choose Period:</label> 
         <SELECT class="form-control" name=period onchange="document.location.href=\'Modules.php?modname=' . $_REQUEST['modname'] . '&period=\'+this.options[selectedIndex].value">';
         $period_select .= "<OPTION value='' selected>N/A</OPTION>";
         $fi = array();
@@ -415,7 +398,7 @@ if ($profile[1]['PROFILE'] != "admin" && UserCoursePeriod() != '') {
         $period_select .= "</SELECT>";
     }
     if ($_REQUEST['attn'] == 'miss') {
-        $backBtn = '<A HREF="Modules.php?modname=miscellaneous/Portal.php" class="btn btn-default"><i class="icon-arrow-left8"></i> '._backToMissingAttendanceList.'</a>';
+        $backBtn = '<A HREF="Modules.php?modname=miscellaneous/Portal.php" class="btn btn-default"><i class="icon-arrow-left8"></i> Back to Missing Attendance List</a>';
         DrawHeader($backBtn, '<div class="form-inline">' . $period_select . '</div>');
     } else {
         DrawHeader('<div class="form-inline">' . $period_select . '</div>');
@@ -426,16 +409,16 @@ $profile_check = $profile_check[1]['PROFILE'];
 
 $btnGo = '';
 if (isset($_REQUEST['cp_id_miss_attn'])) {
-    $btnGo = "<input type='button' value='"._go."' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[cpv_id_miss_attn])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
+    $btnGo = "<input type='button' value='Go' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[cpv_id_miss_attn])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
 } else
-    $btnGo = "<input type='button' value='"._go."' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[period])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
+    $btnGo = "<input type='button' value='Go' class='btn btn-primary m-l-10 m-r-10' onClick='document.location.href=\"Modules.php?modname=users/TeacherPrograms.php?include=attendance/TakeAttendance.php&amp;period=" . strip_tags(trim($_REQUEST[period])) . "&amp;include=attendance/TakeAttendance.php&amp;day_date=\"+this.form.day_date.value+\"&amp;year_date=\"+this.form.year_date.value+\"&amp;table=0&amp;month_date=\"+this.form.month_date.value;' />";
 
 
 if ($profile_check == 'admin') {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 1) . '</div>' . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 1) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
         echo '<div class="panel-body">';
         echo '<div class="form-inline">';
@@ -448,7 +431,7 @@ if ($profile_check == 'admin') {
 
     if (count($stu_RET) != 0 && count($course_RET) != 0) {
 
-        DrawHeader(SubmitButton(_save, '', 'class="btn btn-primary pull-right" onclick="self_disable(this);"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 3) . '</div>' . $btnGo . $date_note . '</div>');
+        DrawHeader(SubmitButton('Save', '', 'class="btn btn-primary pull-right"') . '<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 3) . '</div>' . $btnGo . $date_note . '</div>');
     } else {
         DrawHeader('<div class="form-inline"><div class="inline-block">' . DateInputAY($date, 'date', 4) . '</div>' . $btnGo . $date_note . '</div>');
     }
@@ -462,10 +445,7 @@ if ($profile_check == 'admin') {
 DrawHeader($note);
 DrawHeader($note1);
 
-$LO_columns = array('FULL_NAME' => _student,
- 'STUDENT_ID' => _studentId,
- 'GRADE_ID' => _grade,
- ) + $columns;
+$LO_columns = array('FULL_NAME' => 'Student', 'STUDENT_ID' => 'Student ID', 'GRADE_ID' => 'Grade') + $columns;
 
 $tabs[] = array('title' => 'Attendance', 'link' => "Modules.php?modname=$_REQUEST[modname]&table=0&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]");
 $categories_RET = DBGet(DBQuery('SELECT ID,TITLE FROM attendance_code_categories WHERE SYEAR=\'' . UserSyear() . '\' AND SCHOOL_ID=\'' . UserSchool() . '\''));
@@ -476,17 +456,17 @@ foreach ($categories_RET as $category)
 if (count($categories_RET)) {
     if (count($course_RET) != 0)
         echo '<CENTER>' . WrapTabs($tabs, "Modules.php?modname=$_REQUEST[modname]&table=$_REQUEST[table]&month_date=$_REQUEST[month_date]&day_date=$_REQUEST[day_date]&year_date=$_REQUEST[year_date]") . '</CENTER>';
-    $extra = array('download' =>true, 'search' =>true);
-    $singular = _student;
-    $plural = _students;
+    $extra = array('download' => true, 'search' => true);
+    $singular = 'Student';
+    $plural = 'Students';
 }
 else {
     $extra = array();
-    $singular = _student;
-    $plural = _students;
+    $singular = 'Student';
+    $plural = 'Students';
 }
 if (!$mp_id) {
-    echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">'._theSelectedDateIsNotInASchoolQuarter.'.</div></div>';
+    echo '<div class="panel-body p-t-0 p-b-0"><div class="alert alert-danger alert-bordered">The selected date is not in a school quarter.</div></div>';
 } else {
     if (count($course_RET) != 0) {
         $posted_date2 = ucfirst(strtolower($_REQUEST['month_date'])) . '-' . $_REQUEST['day_date'] . '-' . $_REQUEST['year_date'];
@@ -501,7 +481,7 @@ if (!$mp_id) {
         echo '<div class="panel-footer">';
         echo '<div class="heading-elements text-right p-r-20">';
         if (count($stu_RET) > 0 && count($course_RET) > 0) {
-            echo SubmitButton(_save, '', 'class="btn btn-primary" onclick="self_disable(this);"');
+            echo SubmitButton('Save', '', 'class="btn btn-primary"');
         }
         echo '</div>'; //.heading-elements
         echo '</div>'; //.panel-footer

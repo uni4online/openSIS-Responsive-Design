@@ -123,36 +123,36 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
             
             echo '<div class="modal-header">';
             echo '<button type="button" class="close" data-dismiss="modal">×</button>';
-            echo '<h5 class="modal-title">'._transferredOut.'</h5>';
+            echo '<h5 class="modal-title">Transferred Out</h5>';
             echo '</div>';
             echo '<div class="modal-body">';
             echo '<input type="hidden" name="values[student_enrollment]['.$_REQUEST['student_id'].'][DROP_CODE]" value="'.$_REQUEST['drop_code'].'" />';
             echo '<div class="form-group datepicker-group">';
-            echo '<label class="control-label">'._currentSchoolDropDate.'</label>';
+            echo '<label class="control-label">Current school drop date</label>';
             //echo DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]', '', $div, true);
             echo custom_datepicker('222', 'TRANSFER[STUDENT_ENROLLMENT_END_DATE]');
 
             echo '</div>';
 
             echo '<div class="form-group">';
-            echo '<label class="control-label">'._transferringTo.'</label>';
+            echo '<label class="control-label">Transferring to</label>';
             echo SelectInputModal('', 'TRANSFER[SCHOOL]', '', $options, false, $extraM, 'class=cell_medium');
             echo '</div>';
 
             echo '<div class="form-group">';
-            echo '<label class="control-label">'._gradeLevel.'</label>';
+            echo '<label class="control-label">Grade Level</label>';
             echo SelectInputModal('', 'TRANSFER[Grade_Level]', '', $options1, false, $exg, 'class=cell_medium');
             echo '</div>';
 
             echo '<div class="form-group">';
-            echo '<label class="control-label">'._newSchoolSEnrollmentDate.'</label>';
+            echo '<label class="control-label">New school\'s enrollment date</label>';
             //echo DateInput_for_EndInputModal('', 'TRANSFER[STUDENT_ENROLLMENT_START]', '', $div, true);
             echo custom_datepicker('223', 'TRANSFER[STUDENT_ENROLLMENT_START]');
             echo '</div>';
             echo '</div>'; //.modal-body
 
             echo '<div class="modal-footer">';
-            echo '<INPUT type=submit class="btn btn-primary" name=button value='._save.'>';
+            echo '<INPUT type=submit class="btn btn-primary" name=button value=Save>';
             echo '</div>';
 
             //echo '</FORM>';
@@ -162,8 +162,8 @@ if ($_REQUEST['modfunc'] == 'detail' && $_REQUEST['student_id'] && $_REQUEST['st
             unset($_REQUEST['button']);
             unset($_SESSION['_REQUEST_vars']['button']);
         } else {
-            echo '<div align=center class="m-15">There is only one school in the system so student cannot be transfered to any other school<br /><br>
-                   <input type=button class="btn btn-default" value=Close onclick=\'closeThisModal("modal_default_transferred_out");\'></div>
+            echo '<div align=center>There is only one school in the system so student cannot be transfered to any other school<br /><br>
+                   <input type=button class="btn btn-default" value=Close onclick=\'window.close();\'></div>
                     </form>';
 //            PopTableWindow('footer');
 
